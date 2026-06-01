@@ -30,6 +30,19 @@ import {
 import { restrictToHorizontalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
 import { CSS } from '@dnd-kit/utilities';
 
+// Helper for dynamic colors
+const getCategoryColor = (category?: string) => {
+  const c = category?.toLowerCase() || '';
+  if (c.includes('fuzz') || c.includes('distortion')) return 'rgba(239,68,68,'; // Red
+  if (c.includes('overdrive')) return 'rgba(249,115,22,'; // Orange
+  if (c.includes('chorus') || c.includes('flanger') || c.includes('phaser')) return 'rgba(6,182,212,'; // Cyan
+  if (c.includes('delay')) return 'rgba(59,130,246,'; // Blue
+  if (c.includes('reverb')) return 'rgba(168,85,247,'; // Purple
+  if (c.includes('eq') || c.includes('pitch')) return 'rgba(34,197,94,'; // Green
+  if (c.includes('compressor') || c.includes('dynamics')) return 'rgba(234,179,8,'; // Yellow
+  return 'rgba(255,107,0,'; // Default Accent
+};
+
 interface SignalChainEditorProps {
   chain: SignalChain;
   pedalDefinitions: PedalDefinition[];
@@ -42,6 +55,7 @@ interface SignalChainEditorProps {
   onTogglePedalBypass: (pedalId: string) => void;
   onSetAmp: (ampSlug: string) => void;
   onUpdateAmpControl: (controlId: string, value: number | string | boolean) => void;
+  onToggleAmpBypass?: () => void;
   onSetCabinet: (cabinetSlug: string) => void;
 }
 
@@ -65,21 +79,25 @@ function SortablePedal({
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: pedal.id });
 
+  const colorPrefix = getCategoryColor(definition.category);
+  const activeStyle = isActive 
+    ? { borderColor: `${colorPrefix}0.8)`, backgroundColor: `${colorPrefix}0.1)`, boxShadow: `0 0 15px ${colorPrefix}0.5)` }
+    : {};
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0 : 1,
     zIndex: isDragging ? 50 : 1,
+    ...activeStyle
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="relative flex-shrink-0 group">
+    <div ref={setNodeRef} style={style} className={`relative flex-shrink-0 group rounded-lg border-2 transition-all ${
+      isActive ? '' : 'border-border bg-card/90 hover:border-white/20 shadow-[0_4px_10px_rgba(0,0,0,0.4)]'
+    }`}>
       <div 
-        className={`w-20 h-28 rounded-lg border-2 cursor-pointer flex flex-col items-center justify-between p-2 transition-all ${
-          isActive 
-            ? 'border-accent bg-accent/10 shadow-[0_0_15px_rgba(255,107,0,0.5)]' 
-            : 'border-border bg-card/90 hover:border-accent/60 shadow-[0_4px_10px_rgba(0,0,0,0.4)]'
-        } ${pedal.bypassed ? 'opacity-60 grayscale-[0.5]' : ''}`}
+        className={`w-20 h-28 cursor-pointer flex flex-col items-center justify-between p-2 transition-opacity ${pedal.bypassed ? 'opacity-60 grayscale-[0.5]' : ''}`}
         onClick={onClick}
       >
         <div {...attributes} {...listeners} className="absolute -top-3 left-1/2 -translate-x-1/2 p-1.5 bg-card/90 backdrop-blur border border-border rounded-md opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing hover:bg-accent hover:text-black hover:border-accent z-20">
@@ -132,6 +150,7 @@ export function SignalChainEditor({
   onTogglePedalBypass,
   onSetAmp,
   onUpdateAmpControl,
+  onToggleAmpBypass,
   onSetCabinet,
 }: SignalChainEditorProps) {
   const [selectedItem, setSelectedItem] = useState<{ type: 'pedal' | 'amp' | 'cabinet'; id?: string } | null>(null);
@@ -221,8 +240,11 @@ export function SignalChainEditor({
               
               {/* Input Node */}
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full border-2 border-muted flex items-center justify-center bg-black shadow-inner">
-                  <div className="w-4 h-4 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse" />
+                <div className="flex flex-col items-center gap-2">
+                  <span className="text-[10px] font-bold text-muted-foreground tracking-widest">IN</span>
+                  <div className="w-12 h-12 rounded-full border-2 border-muted flex items-center justify-center bg-black shadow-inner">
+                    <div className="w-4 h-4 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse" />
+                  </div>
                 </div>
                 <ChevronRight className="w-5 h-5 text-muted-foreground/50" />
               </div>
@@ -264,11 +286,12 @@ export function SignalChainEditor({
             {/* Amp Node */}
             <div 
               className={`w-32 h-24 rounded-lg border-2 cursor-pointer flex flex-col items-center justify-center gap-2 transition-all p-3 shadow-md shrink-0 ${
-                selectedItem?.type === 'amp' ? 'border-accent bg-accent/10 shadow-[0_0_15px_rgba(255,107,0,0.4)]' : 'border-border bg-card/80 hover:border-accent/50'
-              }`}
+                selectedItem?.type === 'amp' ? '' : 'border-border bg-card/80 hover:border-orange-500/50'
+              } ${chain.amp?.bypassed ? 'opacity-60 grayscale-[0.5]' : ''}`}
+              style={selectedItem?.type === 'amp' ? { borderColor: 'rgba(249,115,22,0.8)', backgroundColor: 'rgba(249,115,22,0.1)', boxShadow: '0 0 15px rgba(249,115,22,0.5)' } : {}}
               onClick={() => { setSelectedItem({ type: 'amp' }); setIsChangingAmp(false); }}
             >
-              <Guitar className={`w-8 h-8 ${chain.amp ? 'text-accent' : 'text-muted-foreground'}`} />
+              <Guitar className={`w-8 h-8 ${chain.amp ? (selectedItem?.type === 'amp' ? 'text-orange-500' : 'text-muted-foreground') : 'text-muted-foreground'}`} />
               <span className="text-[10px] font-bold uppercase text-center text-balance leading-tight">
                 {chain.amp ? ampDefinitions.find(d => d.slug === chain.amp!.definitionSlug)?.name : 'Select Amp'}
               </span>
@@ -279,11 +302,12 @@ export function SignalChainEditor({
             {/* Cabinet Node */}
             <div 
               className={`w-32 h-24 rounded-lg border-2 cursor-pointer flex flex-col items-center justify-center gap-2 transition-all p-3 shadow-md shrink-0 ${
-                selectedItem?.type === 'cabinet' ? 'border-accent bg-accent/10 shadow-[0_0_15px_rgba(255,107,0,0.4)]' : 'border-border bg-card/80 hover:border-accent/50'
+                selectedItem?.type === 'cabinet' ? '' : 'border-border bg-card/80 hover:border-neutral-400/50'
               }`}
+              style={selectedItem?.type === 'cabinet' ? { borderColor: 'rgba(156,163,175,0.8)', backgroundColor: 'rgba(156,163,175,0.1)', boxShadow: '0 0 15px rgba(156,163,175,0.5)' } : {}}
               onClick={() => { setSelectedItem({ type: 'cabinet' }); setIsChangingCab(false); }}
             >
-              <Speaker className={`w-8 h-8 ${chain.cabinet ? 'text-accent' : 'text-muted-foreground'}`} />
+              <Speaker className={`w-8 h-8 ${chain.cabinet ? (selectedItem?.type === 'cabinet' ? 'text-neutral-400' : 'text-muted-foreground') : 'text-muted-foreground'}`} />
               <span className="text-[10px] font-bold uppercase text-center text-balance leading-tight">
                 {chain.cabinet ? cabinetDefinitions.find(d => d.slug === chain.cabinet!.definitionSlug)?.name : 'Select Cab'}
               </span>
@@ -292,8 +316,11 @@ export function SignalChainEditor({
             <ChevronRight className="w-5 h-5 text-muted-foreground/50 shrink-0" />
 
             {/* Output Node */}
-            <div className="w-12 h-12 rounded-full border-2 border-muted flex items-center justify-center bg-black shadow-inner shrink-0">
-              <div className="w-4 h-4 rounded-full bg-accent shadow-[0_0_10px_rgba(255,107,0,0.6)] animate-pulse" />
+            <div className="flex flex-col items-center gap-2 shrink-0">
+              <span className="text-[10px] font-bold text-muted-foreground tracking-widest">OUT</span>
+              <div className="w-12 h-12 rounded-full border-2 border-muted flex items-center justify-center bg-black shadow-inner shrink-0">
+                <div className="w-4 h-4 rounded-full bg-accent shadow-[0_0_10px_rgba(255,107,0,0.6)] animate-pulse" />
+              </div>
             </div>
 
           </div>
@@ -396,8 +423,8 @@ export function SignalChainEditor({
           )}
         </AnimatePresence>
 
-        {/* Focused Hardware Workbench (Center) */}
-        <div className="flex-1 overflow-y-auto flex items-center justify-center p-8 custom-scrollbar relative">
+        {/* Focused Hardware Workbench (Top-Aligned) */}
+        <div className="flex-1 overflow-y-auto flex items-start justify-center p-8 pt-16 custom-scrollbar relative">
           <AnimatePresence mode="wait">
             {!selectedItem ? (
               <motion.div
@@ -453,6 +480,8 @@ export function SignalChainEditor({
                       controlValues={chain.amp.controlValues}
                       onControlChange={onUpdateAmpControl}
                       isSelected={true}
+                      bypassed={chain.amp.bypassed}
+                      onBypassChange={onToggleAmpBypass}
                     />
                   </div>
                 ) : (

@@ -22,13 +22,15 @@ interface ControlRendererProps {
   value: number | string | boolean | undefined;
   onChange: (controlId: string, value: number | string | boolean) => void;
   compact?: boolean;
+  lightTheme?: boolean;
 }
 
 export function renderControl(
   control: ControlDefinition,
   value: number | string | boolean | undefined,
   onChange: (controlId: string, value: number | string | boolean) => void,
-  compact: boolean = false
+  compact: boolean = false,
+  lightTheme: boolean = false
 ): React.ReactNode {
   const currentValue = value !== undefined ? value : control.default ?? 0;
 
@@ -43,6 +45,7 @@ export function renderControl(
             onChange={(val) => onChange(control.id, val)}
             label={control.name}
             compact={compact}
+            lightTheme={lightTheme}
           />
         </div>
       );
@@ -56,27 +59,35 @@ export function renderControl(
             onChange={(val) => onChange(control.id, val)}
             label={control.name}
             compact={compact}
+            lightTheme={lightTheme}
           />
         </div>
       );
 
     case 'enum':
       return (
-        <div key={control.id} className="flex flex-col gap-1">
-          <label className="text-xs uppercase font-semibold text-muted-foreground">
+        <div key={control.id} className="flex flex-col items-center gap-2">
+          <label className={`text-[10px] uppercase font-bold tracking-widest text-center ${lightTheme ? 'text-black/60' : 'text-muted-foreground'}`}>
             {control.name}
           </label>
-          <select
-            value={String(currentValue)}
-            onChange={(e) => onChange(control.id, e.target.value)}
-            className="w-full px-2 py-1.5 bg-card border border-border rounded text-sm text-foreground hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent/30 transition-colors"
-          >
-            {control.values?.map((opt) => (
-              <option key={opt.value} value={String(opt.value)}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+          <div className="flex bg-neutral-900 border border-black rounded shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)] p-1 max-w-[220px] overflow-x-auto custom-scrollbar">
+            {control.values?.map((opt) => {
+              const isSelected = String(currentValue) === String(opt.value);
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => onChange(control.id, opt.value)}
+                  className={`flex-1 px-4 py-1.5 text-[9px] uppercase font-bold whitespace-nowrap transition-all rounded-sm ${
+                    isSelected
+                      ? 'bg-gradient-to-b from-neutral-600 to-neutral-700 text-white shadow-[0_2px_4px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.2)] border border-neutral-500'
+                      : 'text-neutral-500 hover:text-neutral-300 bg-transparent border border-transparent'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       );
 
@@ -90,6 +101,7 @@ export function ControlRenderer({
   value,
   onChange,
   compact = false,
+  lightTheme = false,
 }: ControlRendererProps) {
-  return <>{renderControl(control, value, onChange, compact)}</>;
+  return <>{renderControl(control, value, onChange, compact, lightTheme)}</>;
 }

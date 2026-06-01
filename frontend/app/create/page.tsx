@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
@@ -13,6 +13,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft } from 'lucide-react';
+import { toJpeg } from 'html-to-image';
+import { RigThumbnail } from '@/components/rig-thumbnail';
 
 const GENRES = ['Metal', 'Rock', 'Blues', 'Jazz', 'Clean', 'Folk', 'Country', 'Funk'];
 
@@ -34,6 +36,8 @@ export default function CreateTonePage() {
   
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState('');
+  
+  const thumbnailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -60,11 +64,21 @@ export default function CreateTonePage() {
       setIsCreating(true);
       setError('');
       
+      let thumbnailUrl = '';
+      if (thumbnailRef.current) {
+        try {
+          thumbnailUrl = await toJpeg(thumbnailRef.current, { quality: 0.6, cacheBust: true });
+        } catch (e) {
+          console.error('Failed to generate thumbnail', e);
+        }
+      }
+
       const toneData = {
         title: toneInfo.title,
         artistInspiredBy: toneInfo.artistInspiredBy,
         genre: toneInfo.genre,
         signalChain: signalChain.chain,
+        thumbnailUrl
       };
 
       const result = await tonesApi.create(toneData, token!, { pedals, amps });
@@ -223,16 +237,25 @@ export default function CreateTonePage() {
                 onReorderPedals={signalChain.reorderPedals}
                 onUpdatePedalControl={signalChain.updatePedalControl}
                 onTogglePedalBypass={signalChain.togglePedalBypass}
-                onSetAmp={(slug) => {
-                  const def = amps.find((a) => a.slug === slug);
-                  if (def) signalChain.setAmp(slug, def);
-                }}
+                onSetAmp={(slug) => signalChain.setAmp(slug, amps.find((a) => a.slug === slug)!)}
                 onUpdateAmpControl={signalChain.updateAmpControl}
+                onToggleAmpBypass={signalChain.toggleAmpBypass}
                 onSetCabinet={signalChain.setCabinet}
               />
             </div>
           )}
         </div>
+      </div>
+      
+      {/* Hidden Rig Thumbnail for Capture */}
+      <div className="absolute top-[-9999px] left-[-9999px] pointer-events-none opacity-0">
+        <RigThumbnail 
+          ref={thumbnailRef}
+          chain={signalChain.chain}
+          pedalDefinitions={pedals}
+          ampDefinitions={amps}
+          cabinetDefinitions={cabinets}
+        />
       </div>
     </main>
   );

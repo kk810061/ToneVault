@@ -60,14 +60,8 @@ const normalizeAmp = (body) => {
     return {
       ampDefinitionId: body.amp.ampDefinitionId,
       name: body.amp.name,
-      settings: {
-        gain: body.amp.settings?.gain,
-        bass: body.amp.settings?.bass,
-        middle: body.amp.settings?.middle ?? body.amp.settings?.mids,
-        treble: body.amp.settings?.treble,
-        presence: body.amp.settings?.presence,
-        master: body.amp.settings?.master
-      }
+      bypassed: body.amp.bypassed,
+      settings: body.amp.settings || {}
     };
   }
 
@@ -124,7 +118,8 @@ const buildTonePayload = (body, creatorId) => {
   const payload = {
     title: body.title,
     artistInspiredBy: body.artistInspiredBy,
-    genre: body.genre
+    genre: body.genre,
+    thumbnailUrl: body.thumbnailUrl
   };
 
   if (creatorId) {
@@ -151,24 +146,22 @@ const buildTonePayload = (body, creatorId) => {
 };
 
 const applyToneUpdates = (tone, updates) => {
-  ["title", "artistInspiredBy", "genre", "signalChain"].forEach((key) => {
+  ["title", "artistInspiredBy", "genre", "signalChain", "thumbnailUrl"].forEach((key) => {
     if (updates[key] !== undefined) {
       tone[key] = updates[key];
     }
   });
 
   if (updates.amp) {
+    const newSettings = updates.amp.settings || {};
+    const oldSettings = tone.amp?.settings || {};
+    const mergedSettings = { ...mapToObject(oldSettings), ...newSettings };
+
     tone.amp = {
       ampDefinitionId: updates.amp.ampDefinitionId ?? tone.amp?.ampDefinitionId,
       name: updates.amp.name ?? tone.amp?.name,
-      settings: {
-        gain: updates.amp.settings?.gain ?? tone.amp?.settings?.gain,
-        bass: updates.amp.settings?.bass ?? tone.amp?.settings?.bass,
-        middle: updates.amp.settings?.middle ?? tone.amp?.settings?.middle,
-        treble: updates.amp.settings?.treble ?? tone.amp?.settings?.treble,
-        presence: updates.amp.settings?.presence ?? tone.amp?.settings?.presence,
-        master: updates.amp.settings?.master ?? tone.amp?.settings?.master
-      }
+      bypassed: updates.amp.bypassed ?? tone.amp?.bypassed ?? false,
+      settings: mergedSettings
     };
   }
 

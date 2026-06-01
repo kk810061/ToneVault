@@ -35,47 +35,7 @@ const signalChainItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const ampSettingsSchema = new mongoose.Schema(
-  {
-    gain: {
-      type: Number,
-      min: 0,
-      max: 100,
-      default: 50
-    },
-    bass: {
-      type: Number,
-      min: 0,
-      max: 100,
-      default: 50
-    },
-    middle: {
-      type: Number,
-      min: 0,
-      max: 100,
-      default: 50
-    },
-    treble: {
-      type: Number,
-      min: 0,
-      max: 100,
-      default: 50
-    },
-    presence: {
-      type: Number,
-      min: 0,
-      max: 100,
-      default: 50
-    },
-    master: {
-      type: Number,
-      min: 0,
-      max: 100,
-      default: 50
-    }
-  },
-  { _id: false }
-);
+// Removed strict ampSettingsSchema
 
 const ampSnapshotSchema = new mongoose.Schema(
   {
@@ -88,8 +48,13 @@ const ampSnapshotSchema = new mongoose.Schema(
       trim: true
     },
     settings: {
-      type: ampSettingsSchema,
-      default: () => ({})
+      type: Map,
+      of: mongoose.Schema.Types.Mixed,
+      default: {}
+    },
+    bypassed: {
+      type: Boolean,
+      default: false
     }
   },
   { _id: false }
@@ -138,6 +103,10 @@ const toneSchema = new mongoose.Schema(
     cabinet: {
       type: cabinetSchema,
       default: () => ({})
+    },
+    thumbnailUrl: {
+      type: String,
+      default: ""
     },
     signalChain: {
       type: [signalChainItemSchema],

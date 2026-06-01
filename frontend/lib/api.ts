@@ -86,6 +86,7 @@ interface BackendTone {
     username: string;
     avatar?: string;
   };
+  thumbnailUrl?: string;
   createdAt?: string;
 }
 
@@ -201,10 +202,15 @@ const resolveAmpDefinition = (definitions: AmpDefinition[], name?: string) => {
   return definitions.find((definition) => definition.name === name || definition.slug === slugify(name));
 };
 
-const resolveCabinetDefinition = (cabinet?: BackendTone['cabinetDetails']) => {
-  if (!cabinet) return undefined;
-  const label = [cabinet.type, cabinet.speakerCount].filter(Boolean).join(' ');
-  return cabinetDefinitions.find((definition) => definition.name === label || definition.slug === slugify(label));
+const resolveCabinetDefinition = (cabinetDetails?: BackendTone['cabinetDetails'], cabinetString?: string) => {
+  if (cabinetDetails?.type) {
+    const label = [cabinetDetails.type, cabinetDetails.speakerCount].filter(Boolean).join(' ');
+    return cabinetDefinitions.find((definition) => definition.name === label || definition.slug === slugify(label));
+  }
+  if (cabinetString) {
+    return cabinetDefinitions.find((definition) => definition.name === cabinetString || definition.slug === slugify(cabinetString));
+  }
+  return undefined;
 };
 
 export const adaptTone = (
@@ -212,7 +218,7 @@ export const adaptTone = (
   definitions?: { pedals?: PedalDefinition[]; amps?: AmpDefinition[] }
 ): Tone => {
   const ampDefinition = resolveAmpDefinition(definitions?.amps || [], tone.ampDetails?.name || tone.amp);
-  const cabinetDefinition = resolveCabinetDefinition(tone.cabinetDetails);
+  const cabinetDefinition = resolveCabinetDefinition(tone.cabinetDetails, tone.cabinet);
 
   return {
     ...tone,
@@ -239,6 +245,7 @@ export const adaptTone = (
         ? {
             definitionSlug: ampDefinition.slug,
             controlValues: tone.ampDetails?.settings || {},
+            bypassed: tone.ampDetails?.bypassed || false,
           }
         : null,
       cabinet: cabinetDefinition ? { definitionSlug: cabinetDefinition.slug } : null,
@@ -251,6 +258,7 @@ const toBackendTonePayload = (data: unknown, definitions?: { pedals?: PedalDefin
     title?: string;
     artistInspiredBy?: string;
     genre?: string;
+    thumbnailUrl?: string;
     signalChain?: SignalChain;
   };
 
@@ -267,6 +275,7 @@ const toBackendTonePayload = (data: unknown, definitions?: { pedals?: PedalDefin
     title: value.title,
     artistInspiredBy: value.artistInspiredBy,
     genre: value.genre,
+    thumbnailUrl: value.thumbnailUrl,
     signalChain: value.signalChain.pedals.map((pedal, position) => {
       const definition = definitions?.pedals?.find((item) => item.slug === pedal.definitionSlug);
 
@@ -284,7 +293,7 @@ const toBackendTonePayload = (data: unknown, definitions?: { pedals?: PedalDefin
     amp: value.signalChain.amp
       ? {
           name: ampDefinition?.name || value.signalChain.amp.definitionSlug,
-          settings: value.signalChain.amp.controlValues,
+        bypassed: value.signalChain.amp.bypassed,
         }
       : undefined,
     cabinet: cabinetDefinition

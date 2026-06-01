@@ -14,6 +14,7 @@ export interface SignalChain {
   amp: {
     definitionSlug: string;
     controlValues: ControlValue;
+    bypassed?: boolean;
   } | null;
   cabinet: {
     definitionSlug: string;
@@ -29,6 +30,7 @@ export interface UseSignalChainReturn {
   togglePedalBypass: (pedalId: string) => void;
   setAmp: (ampSlug: string, definition: AmpDefinition) => void;
   updateAmpControl: (controlId: string, value: number | string | boolean) => void;
+  toggleAmpBypass: () => void;
   setCabinet: (cabinetSlug: string) => void;
   clearChain: () => void;
 }
@@ -147,6 +149,18 @@ export function useSignalChain(initialChain?: SignalChain): UseSignalChainReturn
     []
   );
 
+  const toggleAmpBypass = useCallback(() => {
+    setChain((prev) => ({
+      ...prev,
+      amp: prev.amp
+        ? {
+            ...prev.amp,
+            bypassed: !prev.amp.bypassed,
+          }
+        : null,
+    }));
+  }, []);
+
   const setCabinet = useCallback((cabinetSlug: string) => {
     setChain((prev) => ({
       ...prev,
@@ -173,6 +187,7 @@ export function useSignalChain(initialChain?: SignalChain): UseSignalChainReturn
     togglePedalBypass,
     setAmp,
     updateAmpControl,
+    toggleAmpBypass,
     setCabinet,
     clearChain,
   };

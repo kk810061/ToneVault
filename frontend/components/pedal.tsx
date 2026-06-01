@@ -39,7 +39,7 @@ export function Pedal({
 
   return (
     <motion.div
-      className={`relative ${isWide ? 'w-[560px]' : 'w-80'} min-h-[480px] flex flex-col items-center justify-between rounded-xl border-t-2 border-l-2 border-r-[4px] border-b-[6px] transition-all bg-gradient-to-b ${styleClass} p-6 shadow-2xl mx-auto`}
+      className={`relative ${isWide ? 'w-[480px]' : 'w-72'} min-h-[380px] h-fit pb-6 shrink-0 flex flex-col items-center justify-between rounded-xl border-t-2 border-l-2 border-r-[4px] border-b-[6px] transition-all bg-gradient-to-b ${styleClass} p-4 shadow-2xl mx-auto`}
       style={{
         boxShadow: isSelected 
           ? '0 20px 40px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.2), 0 0 30px rgba(255, 107, 0, 0.4)' 
@@ -58,7 +58,7 @@ export function Pedal({
       <div className={`absolute inset-0 bg-black/40 rounded-lg transition-opacity duration-300 pointer-events-none ${bypassed ? 'opacity-100' : 'opacity-0 z-0'}`} />
 
       {/* Header and Branding */}
-      <div className="w-full flex flex-col items-center text-center relative z-10 mb-8 mt-2">
+      <div className="w-full flex flex-col items-center text-center relative z-10 mb-4 mt-2">
         <h3 className="font-black text-2xl uppercase tracking-widest text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
           {definition.name}
         </h3>
@@ -68,48 +68,54 @@ export function Pedal({
         </p>
       </div>
 
-      {/* Controls Grid */}
-      <div className="flex-1 w-full flex flex-col justify-center relative z-10 my-4">
-        <div className={`grid ${isWide ? 'grid-cols-4 gap-x-8' : 'grid-cols-2 gap-x-4'} gap-y-10 justify-items-center w-full max-w-lg mx-auto`}>
-          {definition.controls.map((control) => (
-            <div key={control.id} className={`${control.type === 'enum' ? 'col-span-2 w-full px-4' : ''}`}>
-              {renderControl(
-                control,
-                controlValues[control.id],
-                onControlChange,
-                false
-              )}
-            </div>
-          ))}
+      {/* Controls Container (Flex Wrap) */}
+      <div className="flex-1 w-full flex flex-col justify-center relative z-10 mt-1 mb-2">
+        <div className={`flex flex-wrap justify-center gap-x-6 gap-y-6 w-full ${isWide ? 'max-w-[400px]' : 'max-w-[220px]'} mx-auto`}>
+          {definition.controls.map((control) => {
+            const isEnum = control.type === 'enum';
+            return (
+              <div 
+                key={control.id} 
+                className={`flex justify-center ${isEnum ? 'w-full mt-2 px-2' : ''}`}
+              >
+                {renderControl(
+                  control,
+                  controlValues[control.id],
+                  onControlChange,
+                  false
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Footswitch Section */}
-      <div className="w-full flex flex-col items-center mt-12 mb-4 relative z-10">
+      <div className="w-full flex flex-col items-center mt-2 mb-2 relative z-10">
         {onBypassChange && (
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-3">
             {/* LED Status Light */}
-            <div className="relative w-4 h-4">
+            <div className="relative w-3 h-3">
               <div className={`absolute inset-0 rounded-full transition-all duration-300 border-2 border-black/80 ${
                 bypassed 
                   ? 'bg-neutral-800 shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)]' 
-                  : 'bg-red-500 shadow-[0_0_15px_3px_rgba(255,0,0,0.9),inset_0_1px_2px_rgba(255,255,255,0.5)]'
+                  : 'bg-red-500 shadow-[0_0_12px_3px_rgba(255,0,0,0.9),inset_0_1px_2px_rgba(255,255,255,0.5)]'
               }`} />
             </div>
 
             {/* Heavy Physical Footswitch */}
             <motion.button
               onClick={() => onBypassChange(!bypassed)}
-              className="relative w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-b from-zinc-200 to-zinc-400 border border-zinc-500 shadow-[0_8px_10px_rgba(0,0,0,0.6),inset_0_2px_3px_rgba(255,255,255,0.8)] group outline-none"
-              whileTap={{ scale: 0.95, y: 4, boxShadow: "0 2px 4px rgba(0,0,0,0.6), inset 0 2px 3px rgba(255,255,255,0.8)" }}
+              className="relative w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-b from-zinc-200 to-zinc-400 border border-zinc-500 shadow-[0_6px_8px_rgba(0,0,0,0.6),inset_0_2px_3px_rgba(255,255,255,0.8)] group outline-none"
+              whileTap={{ scale: 0.95, y: 2, boxShadow: "0 2px 4px rgba(0,0,0,0.6), inset 0 2px 3px rgba(255,255,255,0.8)" }}
             >
               {/* Switch Nut / Rings */}
-              <div className="absolute w-20 h-20 rounded-full border-4 border-zinc-800/20 -z-10 shadow-inner" />
-              <div className="absolute w-24 h-24 rounded-full border-2 border-black/10 -z-20" />
+              <div className="absolute w-16 h-16 rounded-full border-[3px] border-zinc-800/20 -z-10 shadow-inner" />
+              <div className="absolute w-20 h-20 rounded-full border border-black/10 -z-20" />
               
-              <Power className="w-6 h-6 text-zinc-600 group-hover:text-zinc-800 transition-colors" />
+              <Power className="w-5 h-5 text-zinc-600 group-hover:text-zinc-800 transition-colors" />
             </motion.button>
-            <span className="text-[9px] font-bold uppercase tracking-widest text-white/50 mt-2">Bypass</span>
+            <span className="text-[8px] font-bold uppercase tracking-widest text-white/50 mt-1">Bypass</span>
           </div>
         )}
       </div>

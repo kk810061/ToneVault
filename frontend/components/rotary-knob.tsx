@@ -11,6 +11,7 @@ interface RotaryKnobProps {
   label?: string;
   compact?: boolean;
   disabled?: boolean;
+  lightTheme?: boolean;
 }
 
 export function RotaryKnob({
@@ -21,6 +22,7 @@ export function RotaryKnob({
   label,
   compact = false,
   disabled = false,
+  lightTheme = false,
 }: RotaryKnobProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -167,11 +169,11 @@ export function RotaryKnob({
       {/* Label and Value */}
       <div className="flex flex-col items-center">
         {label && (
-          <label className="text-[10px] uppercase font-bold text-neutral-400 tracking-widest whitespace-nowrap mb-0.5 drop-shadow-sm">
+          <label className={`text-[10px] uppercase font-bold tracking-widest whitespace-nowrap mb-0.5 ${lightTheme ? 'text-black/60' : 'text-neutral-400 drop-shadow-sm'}`}>
             {label}
           </label>
         )}
-        <div className={`font-mono text-xs font-semibold ${isHovering ? 'text-accent' : 'text-neutral-300'} transition-colors drop-shadow-md`}>
+        <div className={`font-mono text-xs font-semibold transition-colors ${lightTheme ? (isHovering ? 'text-orange-600' : 'text-black/70 drop-shadow-none') : (isHovering ? 'text-accent' : 'text-neutral-300 drop-shadow-md')}`}>
           {value}
         </div>
       </div>

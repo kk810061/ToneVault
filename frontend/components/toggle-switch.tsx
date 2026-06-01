@@ -9,6 +9,7 @@ interface ToggleSwitchProps {
   label?: string;
   compact?: boolean;
   disabled?: boolean;
+  lightTheme?: boolean;
 }
 
 export function ToggleSwitch({
@@ -17,6 +18,7 @@ export function ToggleSwitch({
   label,
   compact = false,
   disabled = false,
+  lightTheme = false,
 }: ToggleSwitchProps) {
   const [isHovering, setIsHovering] = useState(false);
   const sizeClass = compact ? 'w-10 h-14' : 'w-12 h-16';
@@ -67,7 +69,10 @@ export function ToggleSwitch({
       </div>
 
       {label && (
-        <label className="text-[10px] uppercase font-bold text-neutral-400 tracking-widest text-center whitespace-nowrap drop-shadow-sm cursor-pointer" onClick={() => !disabled && onChange(!value)}>
+        <label 
+          className={`text-[10px] uppercase font-bold tracking-widest text-center whitespace-nowrap cursor-pointer ${lightTheme ? 'text-black/60' : 'text-neutral-400 drop-shadow-sm'}`} 
+          onClick={() => !disabled && onChange(!value)}
+        >
           {label}
         </label>
       )}
