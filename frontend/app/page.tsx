@@ -28,9 +28,9 @@ interface FeaturedTone {
 }
 
 // ── Shared animation config ──
-// once: false → animates IN when scrolled into view, OUT when scrolled past
-const VIEWPORT = { once: false, amount: 0.2 };
-const VIEWPORT_TIGHT = { once: false, amount: 0.1 };
+// once: true → animates IN when scrolled into view, stays visible when scrolling back up
+const VIEWPORT = { once: true, amount: 0.2 };
+const VIEWPORT_TIGHT = { once: true, amount: 0.1 };
 
 const fadeUp = {
   hidden: { opacity: 0, y: 48, filter: 'blur(4px)' },
@@ -328,7 +328,10 @@ export default function LandingPage() {
                   </div>
                   <span
                     className="text-5xl font-black leading-none select-none"
-                    style={{ color: 'rgba(255,107,0,0.07)' }}
+                    style={{
+                      color: 'rgba(255,107,0,0.30)',
+                      textShadow: '0 0 20px rgba(255,107,0,0.15)',
+                    }}
                   >
                     {step.step}
                   </span>
