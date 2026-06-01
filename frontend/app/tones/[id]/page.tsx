@@ -303,10 +303,11 @@ export default function ToneDetailsPage({ params }: { params: Promise<{ id: stri
                                       className="cursor-pointer relative origin-top"
                                       onClick={() => setZoomedItemId(zoomedItemId === node.id ? null : node.id)}
                                       animate={{ 
-                                        scale: zoomedItemId === node.id ? 1.4 : 1,
+                                        scale: zoomedItemId === node.id ? 1.5 : 1,
                                         zIndex: zoomedItemId === node.id ? 50 : 1,
-                                        y: zoomedItemId === node.id ? -10 : 0
+                                        y: 0
                                       }}
+                                      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
                                     >
                                       <Pedal
                                         definition={node.payload.definition}

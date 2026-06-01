@@ -1,16 +1,22 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { AuthProvider } from '@/lib/auth-context'
 import { Header } from '@/components/header'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const geist = Geist({ subsets: ['latin'], variable: '--font-geist' });
+const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: 'ToneVault - Premium Guitar Tone Sharing',
-  description: 'Discover, create, and share premium guitar tones. Professional tone sharing platform for guitarists.',
+  title: 'ToneVault – Build, Discover & Share Legendary Guitar Tones',
+  description: 'The premier platform for guitarists to create signal chains, configure amps and pedals, and share professional tones with a global community.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -37,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-background dark">
+    <html lang="en" className={`bg-background dark ${geist.variable} ${geistMono.variable} ${inter.variable}`}>
       <body className="font-sans antialiased bg-background text-foreground">
         <AuthProvider>
           <Header />

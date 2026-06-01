@@ -4,32 +4,65 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* ToneVault Color System - Premium Music Software Dark Theme */
+  /* ── ToneVault Color System ── Premium Music Software Dark Theme ── */
+
+  /* Backgrounds */
   --background: #000000;
-  --foreground: #f5f5f5;
+  --surface: #0a0a0a;
+  --surface-elevated: #161616;
+
+  /* Cards */
   --card: #111111;
   --card-foreground: #ffffff;
+
+  /* Popovers */
   --popover: #1a1a1a;
   --popover-foreground: #f5f5f5;
+
+  /* Primary / Secondary */
   --primary: #111111;
   --primary-foreground: #ffffff;
   --secondary: #1a1a1a;
   --secondary-foreground: #f5f5f5;
-  --muted: #222222;
-  --muted-foreground: #999999;
+
+  /* Muted */
+  --muted: #1e1e1e;
+  --muted-foreground: #888888;
+
+  /* Foreground */
+  --foreground: #f0f0f0;
+
+  /* Borders */
+  --border: #222222;
+  --border-subtle: #1a1a1a;
+  --surface-border: #2a2a2a;
+
+  /* Accent – orange brand */
   --accent: #ff6b00;
   --accent-foreground: #ffffff;
+  --accent-muted: rgba(255, 107, 0, 0.12);
+  --accent-glow: rgba(255, 107, 0, 0.18);
+  --accent-border: rgba(255, 107, 0, 0.25);
+
+  /* Status */
   --destructive: #ff3333;
   --destructive-foreground: #ffffff;
-  --border: #222222;
+
+  /* Inputs */
   --input: #1a1a1a;
   --ring: #ff6b00;
+
+  /* Charts */
   --chart-1: #ff6b00;
   --chart-2: #ff8533;
   --chart-3: #ffa366;
   --chart-4: #ff5500;
   --chart-5: #cc5500;
+
+  /* Radius */
   --radius: 0.5rem;
+
+  /* Sidebar */
   --sidebar: #111111;
   --sidebar-foreground: #f5f5f5;
   --sidebar-primary: #ff6b00;
@@ -42,7 +75,8 @@
 
 .dark {
   --background: #000000;
-  --foreground: #f5f5f5;
+  --surface: #0a0a0a;
+  --surface-elevated: #161616;
   --card: #111111;
   --card-foreground: #ffffff;
   --popover: #1a1a1a;
@@ -51,13 +85,19 @@
   --primary-foreground: #ffffff;
   --secondary: #1a1a1a;
   --secondary-foreground: #f5f5f5;
-  --muted: #222222;
-  --muted-foreground: #999999;
+  --muted: #1e1e1e;
+  --muted-foreground: #888888;
+  --foreground: #f0f0f0;
+  --border: #222222;
+  --border-subtle: #1a1a1a;
+  --surface-border: #2a2a2a;
   --accent: #ff6b00;
   --accent-foreground: #ffffff;
+  --accent-muted: rgba(255, 107, 0, 0.12);
+  --accent-glow: rgba(255, 107, 0, 0.18);
+  --accent-border: rgba(255, 107, 0, 0.25);
   --destructive: #ff3333;
   --destructive-foreground: #ffffff;
-  --border: #222222;
   --input: #1a1a1a;
   --ring: #ff6b00;
   --chart-1: #ff6b00;
@@ -76,8 +116,10 @@
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-sans: var(--font-geist), 'Geist', 'Geist Fallback', ui-sans-serif, system-ui;
+  --font-display: var(--font-inter), 'Inter', ui-sans-serif, system-ui;
+  --font-mono: var(--font-geist-mono), 'Geist Mono', 'Geist Mono Fallback';
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -122,27 +164,190 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
   }
   html {
     @apply bg-background;
+    scroll-behavior: smooth;
   }
 }
 
-/* Smooth scrollbar styling */
+/* ─────────────────────────────────────────────
+   Typography Scale
+───────────────────────────────────────────── */
+.tv-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.tv-page-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--foreground);
+}
+
+.tv-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+
+.tv-card-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--foreground);
+}
+
+.tv-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.tv-meta {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  line-height: 1.4;
+}
+
+/* ─────────────────────────────────────────────
+   Accent gradient text
+───────────────────────────────────────────── */
+.tv-gradient-text {
+  background: linear-gradient(135deg, #ff6b00 0%, #ff9a3c 50%, #ffba6b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─────────────────────────────────────────────
+   Surface / card utilities
+───────────────────────────────────────────── */
+.tv-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.tv-card:hover {
+  border-color: var(--surface-border);
+}
+
+.tv-card-accent {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.tv-card-accent:hover {
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 1px var(--accent-border), 0 16px 48px -8px var(--accent-glow);
+}
+
+/* ─────────────────────────────────────────────
+   Section / layout utilities
+───────────────────────────────────────────── */
+.tv-section {
+  padding: 5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .tv-section {
+    padding: 6rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tv-section {
+    padding: 7rem 2rem;
+  }
+}
+
+.tv-container {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ─────────────────────────────────────────────
+   Grid background (DSP editor aesthetic)
+───────────────────────────────────────────── */
+.tv-grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ─────────────────────────────────────────────
+   Orange glow radial (hero use)
+───────────────────────────────────────────── */
+.tv-hero-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 107, 0, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────
+   Scrollbar
+───────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #111111;
+  background: #0a0a0a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333333;
-  border-radius: 4px;
+  background: #2a2a2a;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #444444;
+  background: #3a3a3a;
+}
+
+/* ─────────────────────────────────────────────
+   Keyframes
+───────────────────────────────────────────── */
+@keyframes tv-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tv-pulse-glow {
+  0%, 100% { opacity: 0.12; }
+  50%       { opacity: 0.22; }
+}
+
+.tv-animate-fade-up {
+  animation: tv-fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.tv-animate-glow {
+  animation: tv-pulse-glow 3s ease-in-out infinite;
 }
