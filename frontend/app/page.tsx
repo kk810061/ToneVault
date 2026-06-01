@@ -328,7 +328,10 @@ export default function LandingPage() {
                   </div>
                   <span
                     className="text-5xl font-black leading-none select-none"
-                    style={{ color: 'rgba(255,107,0,0.07)' }}
+                    style={{
+                      color: 'rgba(255,107,0,0.30)',
+                      textShadow: '0 0 20px rgba(255,107,0,0.15)',
+                    }}
                   >
                     {step.step}
                   </span>

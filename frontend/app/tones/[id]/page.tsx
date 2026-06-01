@@ -12,82 +12,10 @@ import { Cabinet } from '@/components/cabinet';
 import { Pedal } from '@/components/pedal';
 import { LoadingSpinner } from '@/components/loading';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Edit2, Trash2, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Edit2, Trash2 } from 'lucide-react';
 
-const PatchCable = ({ flex = false }: { flex?: boolean }) => (
-  <div className={`${flex ? 'flex-1 min-w-[3rem]' : 'w-16'} h-12 flex items-center shrink-0 z-0 opacity-100 pointer-events-none drop-shadow-2xl self-center`}>
-    <div className="w-4 h-8 bg-gradient-to-b from-zinc-300 via-zinc-400 to-zinc-500 rounded-l-[4px] border border-black/80 shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]"></div>
-    <div className="flex-1 h-5 bg-zinc-900 border-y border-black shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),0_4px_8px_rgba(0,0,0,0.8)]"></div>
-    <div className="w-4 h-8 bg-gradient-to-b from-zinc-300 via-zinc-400 to-zinc-500 rounded-r-[4px] border border-black/80 shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)]"></div>
-  </div>
-);
-
-const CornerTopRight = () => (
-  <div className="relative w-12 shrink-0 self-stretch flex items-end">
-    <div className="absolute top-1/2 left-0 w-full h-5 bg-zinc-900 border-y border-black -translate-y-1/2" />
-    <div className="w-5 h-1/2 bg-zinc-900 border-x border-black absolute right-0 bottom-0" />
-    <div className="absolute top-1/2 right-0 w-5 h-5 bg-zinc-700 border border-black -translate-y-1/2 rounded-[4px]" />
-  </div>
-);
-
-const CornerBottomRight = () => (
-  <div className="relative w-12 shrink-0 self-stretch flex items-start">
-    <div className="w-5 h-1/2 bg-zinc-900 border-x border-black absolute right-0 top-0" />
-    <div className="absolute top-1/2 left-0 w-full h-5 bg-zinc-900 border-y border-black -translate-y-1/2" />
-    <div className="absolute top-1/2 right-0 w-5 h-5 bg-zinc-700 border border-black -translate-y-1/2 rounded-[4px]" />
-  </div>
-);
-
-const GapCableRight = () => (
-  <div className="w-full h-16 flex justify-end">
-    <div className="w-12 relative h-full shrink-0">
-       <div className="absolute top-0 right-0 w-5 h-full bg-zinc-900 border-x border-black shadow-[inset_0_2px_4px_rgba(255,255,255,0.1)]" />
-    </div>
-  </div>
-);
-
-const CornerTopLeft = () => (
-  <div className="relative w-12 shrink-0 self-stretch flex items-end">
-    <div className="absolute top-1/2 left-0 w-full h-5 bg-zinc-900 border-y border-black -translate-y-1/2" />
-    <div className="w-5 h-1/2 bg-zinc-900 border-x border-black absolute left-0 bottom-0" />
-    <div className="absolute top-1/2 left-0 w-5 h-5 bg-zinc-700 border border-black -translate-y-1/2 rounded-[4px]" />
-  </div>
-);
-
-const CornerBottomLeft = () => (
-  <div className="relative w-12 shrink-0 self-stretch flex items-start">
-    <div className="w-5 h-1/2 bg-zinc-900 border-x border-black absolute left-0 top-0" />
-    <div className="absolute top-1/2 left-0 w-full h-5 bg-zinc-900 border-y border-black -translate-y-1/2" />
-    <div className="absolute top-1/2 left-0 w-5 h-5 bg-zinc-700 border border-black -translate-y-1/2 rounded-[4px]" />
-  </div>
-);
-
-const GapCableLeft = () => (
-  <div className="w-full h-16 flex justify-start">
-    <div className="w-12 relative h-full shrink-0">
-       <div className="absolute top-0 left-0 w-5 h-full bg-zinc-900 border-x border-black shadow-[inset_0_2px_4px_rgba(255,255,255,0.1)]" />
-    </div>
-  </div>
-);
-
-const AmpPlugRight = () => (
-  <div className="w-[1400px] h-0 relative shrink-0 z-0">
-    <div className="absolute top-0 right-0 w-12 flex justify-end" style={{ height: '140px' }}>
-      <div className="w-5 h-full bg-zinc-900 border-x border-black shadow-[inset_0_2px_4px_rgba(255,255,255,0.1)]" />
-    </div>
-    <div className="absolute top-[130px] right-[24px] w-5 h-5 bg-zinc-700 border border-black rounded-[4px]" />
-    <div className="absolute top-[130px] right-[24px] w-[176px] h-5 bg-zinc-900 border-y border-black shadow-[inset_0_2px_4px_rgba(255,255,255,0.1)]" />
-  </div>
-);
-
-const AmpPlugLeft = () => (
-  <div className="w-[1400px] h-0 relative shrink-0 z-0">
-    <div className="absolute top-0 left-0 w-12 flex justify-start" style={{ height: '140px' }}>
-      <div className="w-5 h-full bg-zinc-900 border-x border-black shadow-[inset_0_2px_4px_rgba(255,255,255,0.1)]" />
-    </div>
-    <div className="absolute top-[130px] left-[24px] w-5 h-5 bg-zinc-700 border border-black rounded-[4px]" />
-    <div className="absolute top-[130px] left-[24px] w-[176px] h-5 bg-zinc-900 border-y border-black shadow-[inset_0_2px_4px_rgba(255,255,255,0.1)]" />
-  </div>
+const HorizontalCable = () => (
+  <div className="w-16 h-5 bg-zinc-900 border-y border-black relative shadow-[inset_0_2px_4px_rgba(255,255,255,0.1)] shrink-0 z-0" />
 );
 
 export default function ToneDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -102,6 +30,7 @@ export default function ToneDetailsPage({ params }: { params: Promise<{ id: stri
   const { pedals } = usePedalDefinitions();
   const { amps } = useAmpDefinitions();
   const { cabinets } = useCabinetDefinitions();
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchTone = async () => {
@@ -120,6 +49,72 @@ export default function ToneDetailsPage({ params }: { params: Promise<{ id: stri
 
     fetchTone();
   }, [id, pedals, amps]);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    let targetScroll = container.scrollLeft;
+    let isAnimating = false;
+
+    const updateScroll = () => {
+      if (!container) return;
+      
+      const diff = targetScroll - container.scrollLeft;
+      
+      // Stop animating if we're close enough to the target
+      if (Math.abs(diff) < 1) {
+        container.scrollLeft = targetScroll;
+        isAnimating = false;
+        return;
+      }
+      
+      // Lerp: move 15% of the remaining distance per frame
+      container.scrollLeft += diff * 0.15;
+      requestAnimationFrame(updateScroll);
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      // Only hijack if the user is scrolling vertically (e.g. mouse wheel)
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        const isScrollingDown = e.deltaY > 0;
+        const isScrollingUp = e.deltaY < 0;
+        
+        // Calculate max scrollable width
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+
+        // If the user manually used the scrollbar, resync the target
+        if (Math.abs(container.scrollLeft - targetScroll) > 100) {
+          targetScroll = container.scrollLeft;
+        }
+
+        // If at the left edge and scrolling up (left), release to native scroll
+        if (isScrollingUp && targetScroll <= 0) {
+          return; 
+        }
+
+        // If at the right edge and scrolling down (right), release to native scroll
+        if (isScrollingDown && Math.ceil(targetScroll) >= maxScrollLeft - 2) {
+          return; 
+        }
+
+        // Otherwise, intercept and apply smooth scroll logic
+        e.preventDefault();
+        
+        // Update target scroll position, multiplying by 1.2 for slightly snappier distance
+        targetScroll = Math.max(0, Math.min(maxScrollLeft, targetScroll + e.deltaY * 1.2));
+        
+        // Kick off the animation loop if it's not already running
+        if (!isAnimating) {
+          isAnimating = true;
+          requestAnimationFrame(updateScroll);
+        }
+      }
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => container.removeEventListener('wheel', handleWheel);
+  }, [tone, pedals, tone?.dspChain.pedals.length]);
 
   const handleDelete = async () => {
     if (!token) {
@@ -171,7 +166,6 @@ export default function ToneDetailsPage({ params }: { params: Promise<{ id: stri
   const ampDefinition = amps.find((amp) => amp.slug === tone.dspChain.amp?.definitionSlug);
   const cabinetDefinition = cabinets.find((cabinet) => cabinet.slug === tone.dspChain.cabinet?.definitionSlug);
 
-  const ITEMS_PER_ROW = 3;
   const nodes: { type: string, id: string, payload: any }[] = [];
   
   tone.dspChain.pedals.forEach((pedal) => {
@@ -180,23 +174,6 @@ export default function ToneDetailsPage({ params }: { params: Promise<{ id: stri
       nodes.push({ type: 'pedal', id: pedal.id, payload: { pedal, definition } });
     }
   });
-
-  if (ampDefinition || cabinetDefinition) {
-    // We will render these separately at the bottom
-  }
-
-  const rows: typeof nodes[] = [];
-  let currentRow: typeof nodes = [];
-  nodes.forEach((node) => {
-    if (node.type === 'amp-cab') {
-      if (currentRow.length > 0) { rows.push(currentRow); currentRow = []; }
-      rows.push([node]);
-    } else {
-      currentRow.push(node);
-      if (currentRow.length === ITEMS_PER_ROW) { rows.push(currentRow); currentRow = []; }
-    }
-  });
-  if (currentRow.length > 0) rows.push(currentRow);
 
   return (
     <main className="min-h-screen bg-background">
@@ -246,111 +223,80 @@ export default function ToneDetailsPage({ params }: { params: Promise<{ id: stri
           <motion.div 
             initial={{ opacity: 0, scale: 0.98 }} 
             animate={{ opacity: 1, scale: 1 }} 
-            className="w-full bg-neutral-950 border border-neutral-800 rounded-xl flex items-start p-8 overflow-x-auto relative min-h-[450px] shadow-2xl"
+            className="w-full bg-neutral-950 border border-neutral-800 rounded-xl py-8 relative min-h-[450px] shadow-2xl"
           >
-            {/* Subtle grid background */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none rounded-xl"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent pointer-events-none z-0 rounded-xl" />
 
-            {/* The Boustophedon interactive hardware rig */}
+            {zoomedItemId && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="fixed inset-0 z-40 bg-black/70 backdrop-blur-md cursor-pointer"
+                onClick={() => setZoomedItemId(null)}
+              />
+            )}
+
             <div 
-              className="flex flex-col items-center justify-center w-full mx-auto py-12 origin-top relative"
+              className="flex flex-col items-center justify-start w-full py-8 origin-top relative"
               style={{ zoom: 0.7 }}
             >
-              {/* Backdrop overlay for zoom - must be inside scaled container to share stacking context */}
-              {zoomedItemId && (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="absolute -inset-20 z-40 bg-black/70 backdrop-blur-md cursor-pointer rounded-xl"
-                  onClick={() => setZoomedItemId(null)}
-                />
-              )}
-              {rows.length === 0 ? (
+              {nodes.length === 0 && !ampDefinition && !cabinetDefinition ? (
                 <p className="text-muted-foreground font-semibold uppercase tracking-widest text-sm text-center w-full">No hardware in this rig</p>
               ) : (
-                <div className="flex flex-col w-[1400px] mx-auto">
-                  {rows.map((row, rowIndex) => {
-                    const isEven = rowIndex % 2 === 0;
-                    const hasNextRow = rowIndex < rows.length - 1;
-                    const isFirstRow = rowIndex === 0;
+                <div className="flex flex-col items-center w-full mx-auto">
+                  {/* Horizontal Pedals Row */}
+                  {nodes.length > 0 && (
+                    <div 
+                      ref={scrollContainerRef}
+                      className="w-full overflow-x-auto custom-scrollbar"
+                      style={{ paddingTop: '160px', paddingBottom: '120px' }}
+                    >
+                      <div className="flex flex-row items-center justify-start w-max mx-auto px-16">
+                      {nodes.map((node, index) => {
+                        const definition = node.payload.definition;
+                        if (!definition) return null;
+                        
+                        return (
+                          <React.Fragment key={node.id}>
+                            <div className={`flex flex-col justify-center shrink-0 relative ${zoomedItemId === node.id ? 'z-50' : 'z-10'}`}>
+                              <motion.div
+                                className={`cursor-pointer relative origin-center rounded-xl w-fit shrink-0
+                                  ${zoomedItemId === node.id ? 'z-50' : 'z-10'}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setZoomedItemId(zoomedItemId === node.id ? null : node.id);
+                                }}
+                                animate={{ 
+                                  scale: zoomedItemId === node.id ? 1.4 : 1,
+                                  zIndex: zoomedItemId === node.id ? 50 : 10,
+                                  y: zoomedItemId === node.id ? -20 : 0
+                                }}
+                                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                              >
+                                <Pedal
+                                  definition={definition}
+                                  controlValues={node.payload.pedal.controlValues}
+                                  onControlChange={() => undefined}
+                                  bypassed={node.payload.pedal.bypassed}
+                                />
+                              </motion.div>
+                            </div>
+                            
+                            {/* Patch Cable */}
+                            {index < nodes.length - 1 && (
+                              <HorizontalCable />
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                      </div>
+                    </div>
+                  )}
 
-                    return (
-                      <React.Fragment key={`row-${rowIndex}`}>
-                        <div className={`flex w-full items-center ${isEven ? 'flex-row' : 'flex-row-reverse'}`}>
-                          
-                          {!isFirstRow && (
-                            isEven ? (
-                              <>
-                                <CornerBottomLeft />
-                                <PatchCable />
-                              </>
-                            ) : (
-                              <>
-                                <CornerBottomRight />
-                                <PatchCable />
-                              </>
-                            )
-                          )}
-
-                          {row.map((node, nodeIndex) => {
-                            const isLastNodeInRow = nodeIndex === row.length - 1;
-                            return (
-                              <React.Fragment key={node.id}>
-                                <div className={`flex flex-col justify-center shrink-0 my-4 relative ${zoomedItemId === node.id ? 'z-50' : 'z-10'}`}>
-                                  {node.type === 'pedal' && (
-                                    <motion.div
-                                      className="cursor-pointer relative origin-top"
-                                      onClick={() => setZoomedItemId(zoomedItemId === node.id ? null : node.id)}
-                                      animate={{ 
-                                        scale: zoomedItemId === node.id ? 1.5 : 1,
-                                        zIndex: zoomedItemId === node.id ? 50 : 1,
-                                        y: 0
-                                      }}
-                                      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-                                    >
-                                      <Pedal
-                                        definition={node.payload.definition}
-                                        controlValues={node.payload.pedal.controlValues}
-                                        onControlChange={() => undefined}
-                                        bypassed={node.payload.pedal.bypassed}
-                                      />
-                                    </motion.div>
-                                  )}
-                                </div>
-
-                                {!isLastNodeInRow && <PatchCable flex />}
-                              </React.Fragment>
-                            );
-                          })}
-
-                          {isEven ? (
-                            <>
-                              <PatchCable flex={!hasNextRow} />
-                              <CornerTopRight />
-                            </>
-                          ) : (
-                            <>
-                              <PatchCable flex={!hasNextRow} />
-                              <CornerTopLeft />
-                            </>
-                          )}
-                        </div>
-
-                        {isEven ? <GapCableRight /> : <GapCableLeft />}
-                      </React.Fragment>
-                    );
-                  })}
-                  
                   {/* Render Amp and Cabinet separated at the bottom */}
                   {(ampDefinition || cabinetDefinition) && (
-                    <div className="w-[1400px] flex flex-col items-center gap-8 relative mt-0">
-                      
-                      {/* Traversal cable if there are pedals */}
-                      {nodes.length > 0 && (
-                        (rows.length - 1) % 2 === 0 ? <AmpPlugRight /> : <AmpPlugLeft />
-                      )}
-                      
+                    <div className="w-[1400px] flex flex-col items-center gap-8 relative mt-8">
                       {ampDefinition && tone.dspChain.amp ? (
                         <div className="flex flex-col items-center gap-24 shrink-0 w-[1400px] relative">
                           <motion.div
