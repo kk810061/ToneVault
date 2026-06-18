@@ -11,13 +11,20 @@ const app = express();
 connectDB();
 
 // Allows requests from a frontend app, such as React running on another port.
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "*",
+  credentials: true,
+}));
 
 // Lets Express read JSON request bodies from Postman or a frontend.
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({ message: "ToneVault API is running" });
+});
+
+app.get("/health", (req, res) => {
+    res.status(200).send("OK");
 });
 
 app.use("/api/auth", require("./routes/authRoutes"));

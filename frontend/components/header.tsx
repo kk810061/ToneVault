@@ -116,9 +116,9 @@ export function Header() {
             whileHover={{ scale: 1.08, rotate: 8 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center shadow-[0_0_12px_rgba(255,107,0,0.35)]"
+            className="flex items-center justify-center shadow-[0_0_12px_rgba(255,107,0,0.35)] rounded-lg"
           >
-            <Music2 className="w-4.5 h-4.5 text-black" strokeWidth={2.5} />
+            <img src="/logo.png" alt="ToneVault Logo" className="w-8 h-8 rounded-lg" />
           </motion.div>
           <span className="text-base font-bold tracking-tight text-foreground group-hover:text-accent transition-colors duration-150">
             ToneVault

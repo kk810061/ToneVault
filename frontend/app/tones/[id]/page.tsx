@@ -3,7 +3,7 @@
 import React, { use, useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { tonesApi, Tone } from '@/lib/api';
 import { useAmpDefinitions, useCabinetDefinitions, usePedalDefinitions } from '@/hooks/useDefinitions';
@@ -69,7 +69,7 @@ function StickyPedalSection({ nodes, zoomedItemId, setZoomedItemId }: { nodes: a
 
   if (nodes.length === 0) {
     return (
-      <section className="py-24 w-full bg-neutral-950 border-y border-neutral-800 flex justify-center items-center h-[50vh]">
+      <section ref={targetRef} className="py-24 w-full bg-neutral-950 border-y border-neutral-800 flex justify-center items-center h-[50vh]">
         <p className="text-muted-foreground font-semibold uppercase tracking-widest text-sm text-center">No hardware in this rig</p>
       </section>
     );
@@ -160,14 +160,18 @@ export default function ToneDetailsPage({ params }: { params: Promise<{ id: stri
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [toneNameToDelete, setToneNameToDelete] = useState('');
   const [zoomedItemId, setZoomedItemId] = useState<string | null>(null);
   const { user, token } = useAuth();
   const router = useRouter();
-  const { pedals } = usePedalDefinitions();
-  const { amps } = useAmpDefinitions();
+  const { pedals, isLoading: isPedalsLoading } = usePedalDefinitions();
+  const { amps, isLoading: isAmpsLoading } = useAmpDefinitions();
   const { cabinets } = useCabinetDefinitions();
 
   useEffect(() => {
+    if (isPedalsLoading || isAmpsLoading) return;
+
     const fetchTone = async () => {
       try {
         setIsLoading(true);
@@ -183,16 +187,20 @@ export default function ToneDetailsPage({ params }: { params: Promise<{ id: stri
     };
 
     fetchTone();
-  }, [id, pedals, amps]);
+  }, [id, isPedalsLoading, isAmpsLoading]); // Only re-run when loading state changes
 
   const handleDelete = async () => {
     if (!token) {
       router.push('/login');
       return;
     }
+    setToneNameToDelete(tone?.title ?? 'Untitled');
+    setShowDeleteModal(true);
+  };
 
-    if (!window.confirm('Are you sure you want to delete this tone?')) return;
-
+  const confirmDelete = async () => {
+    if (!token) return;
+    setShowDeleteModal(false);
     setIsDeleting(true);
     try {
       await tonesApi.delete(id, token);
@@ -338,6 +346,68 @@ export default function ToneDetailsPage({ params }: { params: Promise<{ id: stri
           </div>
         </section>
       )}
+      {/* ── Custom Delete Confirmation Modal ── */}
+      <AnimatePresence>
+        {showDeleteModal && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-md"
+              onClick={() => setShowDeleteModal(false)}
+            />
+            {/* Modal card */}
+            <motion.div
+              key="modal"
+              initial={{ opacity: 0, scale: 0.92, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 24 }}
+              transition={{ type: 'spring', stiffness: 340, damping: 28 }}
+              className="fixed inset-0 z-[201] flex items-center justify-center pointer-events-none"
+            >
+              <div className="pointer-events-auto w-full max-w-sm mx-4 bg-[#0f0f0f] border border-white/10 rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.8)] overflow-hidden">
+                {/* Red top accent bar */}
+                <div className="h-1 w-full bg-gradient-to-r from-red-600 via-red-500 to-red-600" />
+
+                <div className="p-7">
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-5">
+                    <Trash2 className="w-5 h-5 text-red-400" />
+                  </div>
+
+                  {/* Text */}
+                  <h2 className="text-lg font-bold text-white mb-2">Delete Tone?</h2>
+                  <p className="text-sm text-neutral-400 leading-relaxed">
+                    <span className="text-white font-medium">&ldquo;{toneNameToDelete}&rdquo;</span> will be permanently removed
+                    from ToneVault. This action cannot be undone.
+                  </p>
+
+                  {/* Buttons */}
+                  <div className="flex gap-3 mt-7">
+                    <button
+                      onClick={() => setShowDeleteModal(false)}
+                      className="flex-1 py-2.5 rounded-xl border border-white/10 text-sm font-medium text-neutral-300 hover:bg-white/5 hover:text-white transition-all duration-150"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={confirmDelete}
+                      disabled={isDeleting}
+                      className="flex-1 py-2.5 rounded-xl bg-gradient-to-b from-red-500 to-red-600 text-sm font-semibold text-white shadow-[0_4px_16px_rgba(239,68,68,0.35)] hover:from-red-400 hover:to-red-500 active:scale-95 transition-all duration-150 disabled:opacity-50"
+                    >
+                      {isDeleting ? 'Deleting…' : 'Yes, delete it'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
