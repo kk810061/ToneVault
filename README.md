@@ -2,6 +2,22 @@
 
 ToneVault is a full-stack, premium guitar tone sharing platform built to resemble professional DSP software like Neural DSP, Helix Native, and Quad Cortex. It provides a gorgeous horizontal hardware workbench to build, share, and discover custom signal chains.
 
+## 🔗 Demo
+- **Live URL**: https://tone-vault-five.vercel.app
+
+## 📸 Screenshots
+
+<img width="1857" height="921" alt="image" src="https://github.com/user-attachments/assets/a6a6ca30-698b-4f52-8776-87b3054ce9ea" />
+
+<img width="1846" height="917" alt="image" src="https://github.com/user-attachments/assets/294a336c-f06b-4f56-bd04-0b767c047eea" />
+
+<img width="1848" height="915" alt="image" src="https://github.com/user-attachments/assets/9ba48a37-2bbe-47f0-ba37-8b80c494b17f" />
+
+<img width="1850" height="907" alt="image" src="https://github.com/user-attachments/assets/5bb49202-ee45-492e-8bb5-c9c3d333d06a" />
+
+<img width="1828" height="922" alt="image" src="https://github.com/user-attachments/assets/675ead2e-b392-4282-98d2-0501885410f9" />
+
+
 ## Advanced UI/UX Features
 
 - **Apple-style Sticky Horizontal Scroll:** A dynamically measured workbench layout that mathematically ties your browser's raw vertical scrollbar directly to the horizontal sliding of your pedalboard for an incredibly premium, 1:1 scrolljacking experience.
