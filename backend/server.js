@@ -12,7 +12,9 @@ connectDB();
 
 // Allows requests from a frontend app, such as React running on another port.
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "*",
+  origin: process.env.FRONTEND_URL 
+    ? process.env.FRONTEND_URL 
+    : function (origin, callback) { callback(null, true) },
   credentials: true,
 }));
 
