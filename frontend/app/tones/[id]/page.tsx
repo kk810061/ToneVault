@@ -50,12 +50,16 @@ function StickyPedalSection({ nodes, zoomedItemId, setZoomedItemId }: { nodes: a
   });
 
   // Calculate the total height of the sticky section.
-  // We add 800px to give a generous 400px "dead-zone" pause at the start and end.
-  const scrollHeight = scrollRange + 800;
+  // The 1000px buffers on each side create generous "dead-zone" pauses
+  // where the section is sticky but the chain doesn't move yet.  This
+  // gives the spring enough settling time even during fast scrolling so
+  // the horizontal animation always finishes before the section unsticks.
+  const bufferPx = 1000;
+  const scrollHeight = scrollRange + bufferPx * 2;
   
-  // Calculate what percentage of the progress the 400px buffers represent
-  const startBuffer = scrollHeight > 0 ? 400 / scrollHeight : 0;
-  const endBuffer = scrollHeight > 0 ? 1 - (400 / scrollHeight) : 1;
+  // Calculate what percentage of the progress the buffer zones represent
+  const startBuffer = scrollHeight > 0 ? bufferPx / scrollHeight : 0;
+  const endBuffer = scrollHeight > 0 ? 1 - (bufferPx / scrollHeight) : 1;
 
   // Transform raw scroll progress to x translation (strictly linear mapping)
   // [0, startBuffer] -> stays at 0 (Pause)
@@ -68,10 +72,10 @@ function StickyPedalSection({ nodes, zoomedItemId, setZoomedItemId }: { nodes: a
   );
 
   // Smooth the raw transform through a spring so the horizontal slide feels
-  // buttery instead of jittery.  stiffness / damping are tuned for a quick
-  // yet smooth response – high enough to track the scroll closely but low
-  // enough to damp out frame-to-frame noise.
-  const x = useSpring(rawX, { stiffness: 200, damping: 40, mass: 0.5 });
+  // buttery instead of jittery.  Higher stiffness + lower mass = fast tracking
+  // that keeps up with rapid scrolling; damping prevents oscillation;
+  // restDelta snaps the spring to target once it's within half a pixel.
+  const x = useSpring(rawX, { stiffness: 300, damping: 45, mass: 0.3, restDelta: 0.5 });
 
   if (nodes.length === 0) {
     return (
