@@ -61,11 +61,17 @@ function StickyPedalSection({ nodes, zoomedItemId, setZoomedItemId }: { nodes: a
   // [0, startBuffer] -> stays at 0 (Pause)
   // [startBuffer, endBuffer] -> animates to -scrollRange (Slide)
   // [endBuffer, 1] -> stays at -scrollRange (Pause)
-  const x = useTransform(
+  const rawX = useTransform(
     scrollYProgress, 
     [0, startBuffer, endBuffer, 1], 
     [0, 0, -scrollRange, -scrollRange]
   );
+
+  // Smooth the raw transform through a spring so the horizontal slide feels
+  // buttery instead of jittery.  stiffness / damping are tuned for a quick
+  // yet smooth response – high enough to track the scroll closely but low
+  // enough to damp out frame-to-frame noise.
+  const x = useSpring(rawX, { stiffness: 200, damping: 40, mass: 0.5 });
 
   if (nodes.length === 0) {
     return (
@@ -96,7 +102,7 @@ function StickyPedalSection({ nodes, zoomedItemId, setZoomedItemId }: { nodes: a
         )}
 
         <motion.div 
-          style={{ x }} 
+          style={{ x, willChange: 'transform' }} 
           className="flex flex-row items-center justify-start relative origin-left py-8 pl-[10vw] z-50 pointer-events-none"
         >
           <div ref={contentRef} style={{ zoom: 0.7 }} className="flex flex-row items-center w-max pointer-events-auto">
@@ -128,6 +134,7 @@ function StickyPedalSection({ nodes, zoomedItemId, setZoomedItemId }: { nodes: a
                         controlValues={node.payload.pedal.controlValues}
                         onControlChange={() => undefined}
                         bypassed={node.payload.pedal.bypassed}
+                        readOnly
                       />
                     </motion.div>
                   </div>
@@ -319,6 +326,7 @@ export default function ToneDetailsPage({ params }: { params: Promise<{ id: stri
                     controlValues={tone.dspChain.amp.controlValues}
                     onControlChange={() => undefined}
                     bypassed={tone.dspChain.amp.bypassed}
+                    readOnly
                   />
                 </motion.div>
                 

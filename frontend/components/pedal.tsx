@@ -13,6 +13,7 @@ interface PedalProps {
   bypassed?: boolean;
   onBypassChange?: (bypassed: boolean) => void;
   isSelected?: boolean;
+  readOnly?: boolean;
 }
 
 const categoryStyles: Record<string, string> = {
@@ -32,6 +33,7 @@ export function Pedal({
   bypassed = false,
   onBypassChange,
   isSelected = false,
+  readOnly = false,
 }: PedalProps) {
   const categoryLower = definition.category?.toLowerCase() ?? 'default';
   const styleClass = categoryStyles[categoryLower] || categoryStyles.default;
@@ -82,7 +84,9 @@ export function Pedal({
                   control,
                   controlValues[control.id],
                   onControlChange,
-                  false
+                  false,
+                  false,
+                  readOnly
                 )}
               </div>
             );
