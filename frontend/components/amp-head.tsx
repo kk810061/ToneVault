@@ -12,6 +12,7 @@ interface AmpHeadProps {
   isSelected?: boolean;
   bypassed?: boolean;
   onBypassChange?: () => void;
+  readOnly?: boolean;
 }
 
 export function AmpHead({
@@ -21,6 +22,7 @@ export function AmpHead({
   isSelected = false,
   bypassed = false,
   onBypassChange,
+  readOnly = false,
 }: AmpHeadProps) {
   // Group controls by type for better layout
   const knobs = definition.controls.filter((c) => c.type === 'knob');
@@ -115,7 +117,8 @@ export function AmpHead({
                   controlValues[control.id],
                   onControlChange,
                   false,
-                  isLightMode
+                  isLightMode,
+                  readOnly
                 )}
               </div>
             ))}
@@ -129,7 +132,9 @@ export function AmpHead({
                   control,
                   controlValues[control.id],
                   onControlChange,
-                  true
+                  true,
+                  false,
+                  readOnly
                 )}
               </div>
             ))}

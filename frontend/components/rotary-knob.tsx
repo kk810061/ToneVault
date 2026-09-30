@@ -12,6 +12,7 @@ interface RotaryKnobProps {
   compact?: boolean;
   disabled?: boolean;
   lightTheme?: boolean;
+  readOnly?: boolean;
 }
 
 export function RotaryKnob({
@@ -23,6 +24,7 @@ export function RotaryKnob({
   compact = false,
   disabled = false,
   lightTheme = false,
+  readOnly = false,
 }: RotaryKnobProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -34,7 +36,7 @@ export function RotaryKnob({
   const rotation = percentage * 270 - 135;
 
   useEffect(() => {
-    if (!isDragging) return;
+    if (!isDragging || readOnly) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
@@ -72,11 +74,11 @@ export function RotaryKnob({
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, min, max, onChange]);
+  }, [isDragging, readOnly, min, max, onChange]);
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el) return;
+    if (!el || readOnly) return;
 
     const handleWheel = (e: WheelEvent) => {
       if (disabled) return;
@@ -89,7 +91,7 @@ export function RotaryKnob({
 
     el.addEventListener('wheel', handleWheel, { passive: false });
     return () => el.removeEventListener('wheel', handleWheel);
-  }, [value, min, max, disabled, onChange]);
+  }, [value, min, max, disabled, readOnly, onChange]);
 
   const sizeClass = compact ? 'w-12 h-12' : 'w-16 h-16';
   const radius = compact ? 20 : 28;
@@ -104,7 +106,7 @@ export function RotaryKnob({
         ref={containerRef}
         className={`${sizeClass} relative select-none flex items-center justify-center group`}
         onMouseDown={(e) => {
-          if (!disabled && e.button === 0) setIsDragging(true);
+          if (!disabled && !readOnly && e.button === 0) setIsDragging(true);
         }}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}

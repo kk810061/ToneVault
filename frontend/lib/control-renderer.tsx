@@ -30,7 +30,8 @@ export function renderControl(
   value: number | string | boolean | undefined,
   onChange: (controlId: string, value: number | string | boolean) => void,
   compact: boolean = false,
-  lightTheme: boolean = false
+  lightTheme: boolean = false,
+  readOnly: boolean = false
 ): React.ReactNode {
   const currentValue = value !== undefined ? value : control.default ?? 0;
 
@@ -46,6 +47,7 @@ export function renderControl(
             label={control.name}
             compact={compact}
             lightTheme={lightTheme}
+            readOnly={readOnly}
           />
         </div>
       );
