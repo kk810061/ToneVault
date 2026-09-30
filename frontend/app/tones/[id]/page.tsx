@@ -85,6 +85,65 @@ function StickyPedalSection({ nodes, zoomedItemId, setZoomedItemId }: { nodes: a
     );
   }
 
+  // When all pedals fit on screen, skip the sticky scroll mechanism
+  // and render a simple centered section instead.
+  if (scrollRange <= 0) {
+    return (
+      <section className="w-full bg-neutral-950 border-y border-neutral-800 py-12">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"></div>
+        <div className="flex flex-row items-center justify-center relative py-8 z-50">
+          <div style={{ zoom: 0.7 }} className="flex flex-row items-center w-max">
+            {nodes.map((node, index) => {
+              const definition = node.payload.definition;
+              if (!definition) return null;
+              return (
+                <React.Fragment key={node.id}>
+                  <div className={`flex flex-col justify-center shrink-0 relative ${zoomedItemId === node.id ? 'z-50' : 'z-10'}`}>
+                    <motion.div
+                      className={`cursor-pointer relative origin-center rounded-xl w-fit shrink-0
+                        ${zoomedItemId === node.id ? 'z-50' : 'z-10'}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setZoomedItemId(zoomedItemId === node.id ? null : node.id);
+                      }}
+                      animate={{ 
+                        scale: zoomedItemId === node.id ? 1.25 : 1,
+                        zIndex: zoomedItemId === node.id ? 50 : 10,
+                        y: zoomedItemId === node.id ? -10 : 0,
+                        opacity: zoomedItemId && zoomedItemId !== node.id ? 0.3 : 1,
+                        filter: zoomedItemId && zoomedItemId !== node.id ? 'blur(4px)' : 'blur(0px)'
+                      }}
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    >
+                      <Pedal
+                        definition={definition}
+                        controlValues={node.payload.pedal.controlValues}
+                        onControlChange={() => undefined}
+                        bypassed={node.payload.pedal.bypassed}
+                        readOnly
+                      />
+                    </motion.div>
+                  </div>
+                  {index < nodes.length - 1 && (
+                    <motion.div
+                      animate={{ 
+                        opacity: zoomedItemId ? 0.3 : 1,
+                        filter: zoomedItemId ? 'blur(4px)' : 'blur(0px)'
+                      }}
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    >
+                      <HorizontalCable />
+                    </motion.div>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section 
       ref={targetRef} 

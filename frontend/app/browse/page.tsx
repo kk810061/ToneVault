@@ -257,7 +257,7 @@ function BrowsePageInner() {
       </section>
 
       {/* ─── Results ─── */}
-      <section className="tv-section">
+      <section className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
         <div className="tv-container px-4 sm:px-6 lg:px-8">
           {/* Status bar */}
           <div className="flex items-center justify-between mb-6 min-h-[28px]">
