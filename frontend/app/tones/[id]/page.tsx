@@ -31,17 +31,23 @@ function StickyPedalSection({ nodes, zoomedItemId, setZoomedItemId }: { nodes: a
       if (contentRef.current) {
         // Multiply by 0.7 to account for the zoom level scaling down the physical pixels
         const scaledWidth = contentRef.current.scrollWidth * 0.7;
-        
-        // Max scroll is the total scaled width minus the viewport width, plus a little padding so the last item isn't flush
-        const maxScroll = Math.max(0, scaledWidth - window.innerWidth + 300);
+        // Max scroll is the total scaled width minus the viewport width, plus padding
+        const maxScroll = Math.max(0, scaledWidth - document.documentElement.clientWidth + 300);
         setScrollRange(maxScroll);
       }
     };
     
-    // Slight delay to ensure DOM is fully rendered
-    setTimeout(measure, 100);
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
+    measure();
+    const timeoutId = setTimeout(measure, 100);
+
+    const observer = new ResizeObserver(() => measure());
+    if (contentRef.current) observer.observe(contentRef.current);
+    observer.observe(document.body);
+
+    return () => {
+      clearTimeout(timeoutId);
+      observer.disconnect();
+    };
   }, [nodes.length]);
 
   const { scrollYProgress } = useScroll({
@@ -49,97 +55,26 @@ function StickyPedalSection({ nodes, zoomedItemId, setZoomedItemId }: { nodes: a
     offset: ["start start", "end end"]
   });
 
-  // Calculate the total height of the sticky section.
-  // The 1000px buffers on each side create generous "dead-zone" pauses
-  // where the section is sticky but the chain doesn't move yet.  This
-  // gives the spring enough settling time even during fast scrolling so
-  // the horizontal animation always finishes before the section unsticks.
+  // Only add extra scroll height and buffers if we actually need to scroll
   const bufferPx = 1000;
-  const scrollHeight = scrollRange + bufferPx * 2;
+  const needsScroll = scrollRange > 0;
+  const scrollHeight = needsScroll ? scrollRange + bufferPx * 2 : 0;
   
-  // Calculate what percentage of the progress the buffer zones represent
   const startBuffer = scrollHeight > 0 ? bufferPx / scrollHeight : 0;
   const endBuffer = scrollHeight > 0 ? 1 - (bufferPx / scrollHeight) : 1;
 
-  // Transform raw scroll progress to x translation (strictly linear mapping)
-  // [0, startBuffer] -> stays at 0 (Pause)
-  // [startBuffer, endBuffer] -> animates to -scrollRange (Slide)
-  // [endBuffer, 1] -> stays at -scrollRange (Pause)
   const rawX = useTransform(
     scrollYProgress, 
     [0, startBuffer, endBuffer, 1], 
     [0, 0, -scrollRange, -scrollRange]
   );
 
-  // Smooth the raw transform through a spring so the horizontal slide feels
-  // buttery instead of jittery.  Higher stiffness + lower mass = fast tracking
-  // that keeps up with rapid scrolling; damping prevents oscillation;
-  // restDelta snaps the spring to target once it's within half a pixel.
   const x = useSpring(rawX, { stiffness: 300, damping: 45, mass: 0.3, restDelta: 0.5 });
 
   if (nodes.length === 0) {
     return (
       <section ref={targetRef} className="py-24 w-full bg-neutral-950 border-y border-neutral-800 flex justify-center items-center h-[50vh]">
         <p className="text-muted-foreground font-semibold uppercase tracking-widest text-sm text-center">No hardware in this rig</p>
-      </section>
-    );
-  }
-
-  // When all pedals fit on screen, skip the sticky scroll mechanism
-  // and render a simple centered section instead.
-  if (scrollRange <= 0) {
-    return (
-      <section className="w-full bg-neutral-950 border-y border-neutral-800 py-12">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"></div>
-        <div className="flex flex-row items-center justify-center relative py-8 z-50">
-          <div style={{ zoom: 0.7 }} className="flex flex-row items-center w-max">
-            {nodes.map((node, index) => {
-              const definition = node.payload.definition;
-              if (!definition) return null;
-              return (
-                <React.Fragment key={node.id}>
-                  <div className={`flex flex-col justify-center shrink-0 relative ${zoomedItemId === node.id ? 'z-50' : 'z-10'}`}>
-                    <motion.div
-                      className={`cursor-pointer relative origin-center rounded-xl w-fit shrink-0
-                        ${zoomedItemId === node.id ? 'z-50' : 'z-10'}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setZoomedItemId(zoomedItemId === node.id ? null : node.id);
-                      }}
-                      animate={{ 
-                        scale: zoomedItemId === node.id ? 1.25 : 1,
-                        zIndex: zoomedItemId === node.id ? 50 : 10,
-                        y: zoomedItemId === node.id ? -10 : 0,
-                        opacity: zoomedItemId && zoomedItemId !== node.id ? 0.3 : 1,
-                        filter: zoomedItemId && zoomedItemId !== node.id ? 'blur(4px)' : 'blur(0px)'
-                      }}
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                    >
-                      <Pedal
-                        definition={definition}
-                        controlValues={node.payload.pedal.controlValues}
-                        onControlChange={() => undefined}
-                        bypassed={node.payload.pedal.bypassed}
-                        readOnly
-                      />
-                    </motion.div>
-                  </div>
-                  {index < nodes.length - 1 && (
-                    <motion.div
-                      animate={{ 
-                        opacity: zoomedItemId ? 0.3 : 1,
-                        filter: zoomedItemId ? 'blur(4px)' : 'blur(0px)'
-                      }}
-                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                    >
-                      <HorizontalCable />
-                    </motion.div>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
-        </div>
       </section>
     );
   }
@@ -165,8 +100,8 @@ function StickyPedalSection({ nodes, zoomedItemId, setZoomedItemId }: { nodes: a
         )}
 
         <motion.div 
-          style={{ x, willChange: 'transform' }} 
-          className="flex flex-row items-center justify-start relative origin-left py-8 pl-[10vw] z-50 pointer-events-none"
+          style={{ x: needsScroll ? x : 0, willChange: 'transform' }} 
+          className={`flex flex-row items-center relative py-8 z-50 pointer-events-none ${needsScroll ? 'justify-start pl-[10vw] origin-left' : 'justify-center'}`}
         >
           <div ref={contentRef} style={{ zoom: 0.7 }} className="flex flex-row items-center w-max pointer-events-auto">
             {nodes.map((node, index) => {
