@@ -57,6 +57,7 @@ interface SignalChainEditorProps {
   onUpdateAmpControl: (controlId: string, value: number | string | boolean) => void;
   onToggleAmpBypass?: () => void;
   onSetCabinet: (cabinetSlug: string) => void;
+  toolbarRight?: React.ReactNode;
 }
 
 // ------------------------------------------------------------------
@@ -97,32 +98,32 @@ function SortablePedal({
       isActive ? '' : 'border-border bg-card/90 hover:border-white/20 shadow-[0_4px_10px_rgba(0,0,0,0.4)]'
     }`}>
       <div 
-        className={`w-20 h-28 cursor-pointer flex flex-col items-center justify-between p-2 transition-opacity ${pedal.bypassed ? 'opacity-60 grayscale-[0.5]' : ''}`}
+        className={`w-16 h-24 cursor-pointer flex flex-col items-center justify-between p-1.5 transition-opacity ${pedal.bypassed ? 'opacity-60 grayscale-[0.5]' : ''}`}
         onClick={onClick}
       >
-        <div {...attributes} {...listeners} className="absolute -top-3 left-1/2 -translate-x-1/2 p-1.5 bg-card/90 backdrop-blur border border-border rounded-md opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing hover:bg-accent hover:text-black hover:border-accent z-20">
+        <div {...attributes} {...listeners} className="absolute -top-3 left-1/2 -translate-x-1/2 p-1 bg-card/90 backdrop-blur border border-border rounded-md opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing hover:bg-accent hover:text-black hover:border-accent z-20">
           <GripVertical className="w-3 h-3" />
         </div>
 
         <div className="w-full flex justify-between items-start">
-          <div className={`w-2.5 h-2.5 rounded-full border border-black/50 ${pedal.bypassed ? 'bg-neutral-700 shadow-inner' : 'bg-red-500 shadow-[0_0_8px_1px_rgba(255,0,0,0.8)]'}`} />
+          <div className={`w-2 h-2 rounded-full border border-black/50 ${pedal.bypassed ? 'bg-neutral-700 shadow-inner' : 'bg-red-500 shadow-[0_0_8px_1px_rgba(255,0,0,0.8)]'}`} />
           <button 
             onClick={(e) => { e.stopPropagation(); onRemove(); }} 
             className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded-full hover:bg-destructive/20"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-3 h-3" />
           </button>
         </div>
 
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-[10px] font-bold text-center uppercase leading-tight line-clamp-3 text-foreground break-words text-balance">
+          <div className="text-[9px] font-bold text-center uppercase leading-tight line-clamp-2 text-foreground break-words text-balance">
             {definition.name}
           </div>
         </div>
 
         <button 
           onClick={(e) => { e.stopPropagation(); onToggleBypass(); }}
-          className={`w-full mt-1 py-1 rounded text-[9px] uppercase font-bold border transition-colors ${
+          className={`w-full mt-1 py-0.5 rounded text-[8px] uppercase font-bold border transition-colors ${
             pedal.bypassed 
               ? 'border-border bg-background text-muted-foreground hover:bg-muted' 
               : 'border-accent/50 bg-accent/20 text-accent hover:bg-accent hover:text-black'
@@ -152,6 +153,7 @@ export function SignalChainEditor({
   onUpdateAmpControl,
   onToggleAmpBypass,
   onSetCabinet,
+  toolbarRight,
 }: SignalChainEditorProps) {
   const [selectedItem, setSelectedItem] = useState<{ type: 'pedal' | 'amp' | 'cabinet'; id?: string } | null>(null);
   
@@ -227,26 +229,31 @@ export function SignalChainEditor({
         {/* ------------------------------------------------------------------ */}
         {/* TOP: Horizontal Signal Chain Ribbon                                */}
         {/* ------------------------------------------------------------------ */}
-        <div className="h-48 border-b border-border bg-card/60 backdrop-blur-md flex flex-col shrink-0 relative z-20">
+        <div className="border-b border-border bg-card/60 backdrop-blur-md flex flex-col shrink-0 relative z-20">
           <div className="px-4 py-2 border-b border-border/50 flex items-center justify-between bg-black/20">
             <div className="flex items-center gap-2 text-xs uppercase tracking-widest font-bold text-muted-foreground">
               <Activity className="w-4 h-4 text-accent" />
               Signal Routing
             </div>
+            {toolbarRight && (
+              <div className="flex items-center">
+                {toolbarRight}
+              </div>
+            )}
           </div>
 
-          <div className="flex-1 overflow-x-auto flex items-center px-6 py-4 custom-scrollbar">
-            <div className="flex items-center gap-4 min-w-max h-full">
+          <div className="overflow-x-auto flex items-center px-4 py-3 custom-scrollbar">
+            <div className="flex items-center gap-3 min-w-max">
               
               {/* Input Node */}
-              <div className="flex items-center gap-4">
-                <div className="flex flex-col items-center gap-2">
-                  <span className="text-[10px] font-bold text-muted-foreground tracking-widest">IN</span>
-                  <div className="w-12 h-12 rounded-full border-2 border-muted flex items-center justify-center bg-black shadow-inner">
-                    <div className="w-4 h-4 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse" />
+              <div className="flex items-center gap-3">
+                <div className="flex flex-col items-center gap-1.5">
+                  <span className="text-[9px] font-bold text-muted-foreground tracking-widest">IN</span>
+                  <div className="w-10 h-10 rounded-full border-2 border-muted flex items-center justify-center bg-black shadow-inner shrink-0">
+                    <div className="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse" />
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-muted-foreground/50" />
+                <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
               </div>
 
               {/* Pedals Drop Zone (DndKit) */}
@@ -267,7 +274,7 @@ export function SignalChainEditor({
                         }}
                         onToggleBypass={() => onTogglePedalBypass(pedal.id)}
                       />
-                      <ChevronRight className="w-5 h-5 text-muted-foreground/50 shrink-0" />
+                      <ChevronRight className="w-4 h-4 text-muted-foreground/50 shrink-0" />
                     </React.Fragment>
                   );
                 })}
@@ -276,50 +283,50 @@ export function SignalChainEditor({
             {/* Add Pedal Block */}
             <button 
               onClick={() => setShowPedalDrawer(true)}
-              className="w-20 h-28 rounded-lg border-2 border-dashed border-muted hover:border-accent hover:bg-accent/10 flex flex-col items-center justify-center gap-2 transition-colors group cursor-pointer shadow-md shrink-0 bg-black/40"
+              className="w-16 h-24 rounded-lg border-2 border-dashed border-muted hover:border-accent hover:bg-accent/10 flex flex-col items-center justify-center gap-1.5 transition-colors group cursor-pointer shadow-md shrink-0 bg-black/40 p-1"
             >
-              <Plus className="w-6 h-6 text-muted-foreground group-hover:text-accent" />
-              <span className="text-[9px] uppercase font-bold text-muted-foreground group-hover:text-accent">Add Pedal</span>
+              <Plus className="w-5 h-5 text-muted-foreground group-hover:text-accent" />
+              <span className="text-[8px] uppercase font-bold text-muted-foreground group-hover:text-accent text-center">Add Pedal</span>
             </button>
-            <ChevronRight className="w-5 h-5 text-muted-foreground/50 shrink-0" />
+            <ChevronRight className="w-4 h-4 text-muted-foreground/50 shrink-0" />
 
             {/* Amp Node */}
             <div 
-              className={`w-32 h-24 rounded-lg border-2 cursor-pointer flex flex-col items-center justify-center gap-2 transition-all p-3 shadow-md shrink-0 ${
+              className={`w-24 h-20 rounded-lg border-2 cursor-pointer flex flex-col items-center justify-center gap-1.5 transition-all p-2 shadow-md shrink-0 ${
                 selectedItem?.type === 'amp' ? '' : 'border-border bg-card/80 hover:border-orange-500/50'
               } ${chain.amp?.bypassed ? 'opacity-60 grayscale-[0.5]' : ''}`}
               style={selectedItem?.type === 'amp' ? { borderColor: 'rgba(249,115,22,0.8)', backgroundColor: 'rgba(249,115,22,0.1)', boxShadow: '0 0 15px rgba(249,115,22,0.5)' } : {}}
               onClick={() => { setSelectedItem({ type: 'amp' }); setIsChangingAmp(false); }}
             >
-              <Guitar className={`w-8 h-8 ${chain.amp ? (selectedItem?.type === 'amp' ? 'text-orange-500' : 'text-muted-foreground') : 'text-muted-foreground'}`} />
-              <span className="text-[10px] font-bold uppercase text-center text-balance leading-tight">
+              <Guitar className={`w-6 h-6 ${chain.amp ? (selectedItem?.type === 'amp' ? 'text-orange-500' : 'text-muted-foreground') : 'text-muted-foreground'}`} />
+              <span className="text-[9px] font-bold uppercase text-center text-balance leading-tight line-clamp-2">
                 {chain.amp ? ampDefinitions.find(d => d.slug === chain.amp!.definitionSlug)?.name : 'Select Amp'}
               </span>
             </div>
 
-            <ChevronRight className="w-5 h-5 text-muted-foreground/50 shrink-0" />
+            <ChevronRight className="w-4 h-4 text-muted-foreground/50 shrink-0" />
 
             {/* Cabinet Node */}
             <div 
-              className={`w-32 h-24 rounded-lg border-2 cursor-pointer flex flex-col items-center justify-center gap-2 transition-all p-3 shadow-md shrink-0 ${
+              className={`w-24 h-20 rounded-lg border-2 cursor-pointer flex flex-col items-center justify-center gap-1.5 transition-all p-2 shadow-md shrink-0 ${
                 selectedItem?.type === 'cabinet' ? '' : 'border-border bg-card/80 hover:border-neutral-400/50'
               }`}
               style={selectedItem?.type === 'cabinet' ? { borderColor: 'rgba(156,163,175,0.8)', backgroundColor: 'rgba(156,163,175,0.1)', boxShadow: '0 0 15px rgba(156,163,175,0.5)' } : {}}
               onClick={() => { setSelectedItem({ type: 'cabinet' }); setIsChangingCab(false); }}
             >
-              <Speaker className={`w-8 h-8 ${chain.cabinet ? (selectedItem?.type === 'cabinet' ? 'text-neutral-400' : 'text-muted-foreground') : 'text-muted-foreground'}`} />
-              <span className="text-[10px] font-bold uppercase text-center text-balance leading-tight">
+              <Speaker className={`w-6 h-6 ${chain.cabinet ? (selectedItem?.type === 'cabinet' ? 'text-neutral-400' : 'text-muted-foreground') : 'text-muted-foreground'}`} />
+              <span className="text-[9px] font-bold uppercase text-center text-balance leading-tight line-clamp-2">
                 {chain.cabinet ? cabinetDefinitions.find(d => d.slug === chain.cabinet!.definitionSlug)?.name : 'Select Cab'}
               </span>
             </div>
 
-            <ChevronRight className="w-5 h-5 text-muted-foreground/50 shrink-0" />
+            <ChevronRight className="w-4 h-4 text-muted-foreground/50 shrink-0" />
 
             {/* Output Node */}
-            <div className="flex flex-col items-center gap-2 shrink-0">
-              <span className="text-[10px] font-bold text-muted-foreground tracking-widest">OUT</span>
-              <div className="w-12 h-12 rounded-full border-2 border-muted flex items-center justify-center bg-black shadow-inner shrink-0">
-                <div className="w-4 h-4 rounded-full bg-accent shadow-[0_0_10px_rgba(255,107,0,0.6)] animate-pulse" />
+            <div className="flex flex-col items-center gap-1.5 shrink-0">
+              <span className="text-[9px] font-bold text-muted-foreground tracking-widest">OUT</span>
+              <div className="w-10 h-10 rounded-full border-2 border-muted flex items-center justify-center bg-black shadow-inner shrink-0">
+                <div className="w-3 h-3 rounded-full bg-accent shadow-[0_0_10px_rgba(255,107,0,0.6)] animate-pulse" />
               </div>
             </div>
 

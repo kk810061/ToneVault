@@ -124,66 +124,73 @@ export default function CreateTonePage() {
       onUpdateAmpControl={signalChain.updateAmpControl}
       onToggleAmpBypass={signalChain.toggleAmpBypass}
       onSetCabinet={signalChain.setCabinet}
+      toolbarRight={
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => signalChain.clearChain()}
+            className="h-7 text-xs px-3 hover:text-foreground text-muted-foreground"
+          >
+            Reset
+          </Button>
+          <Button 
+            size="sm" 
+            onClick={handleCreateTone} 
+            disabled={isCreating || isLoading}
+            className="h-7 text-xs px-3 bg-accent hover:bg-accent/90 text-black font-semibold"
+          >
+            {isCreating ? 'Saving...' : 'Save Tone'}
+          </Button>
+          <div className="h-4 w-px bg-border/50 mx-1" />
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+            title={isFullscreen ? 'Exit focus mode (Esc)' : 'Enter focus mode'}
+          >
+            {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+          </button>
+        </div>
+      }
     />
   );
 
   return (
     <main className="h-screen bg-gradient-to-b from-background to-muted/20 overflow-hidden">
-      {/* Header */}
-      <div className="sticky top-0 z-50 border-b border-border bg-card/80 backdrop-blur-xl">
-        <div className="max-w-full px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => router.back()}
-              className="p-2 hover:bg-muted rounded-lg transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-            </button>
-            <div>
-              <h1 className="text-xl font-bold uppercase tracking-wide text-foreground">
-                Create Tone
-              </h1>
-              <p className="text-xs text-muted-foreground mt-1">Build your perfect guitar tone</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              onClick={() => signalChain.clearChain()}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Reset
-            </Button>
-            <Button
-              onClick={handleCreateTone}
-              disabled={isCreating || isLoading}
-              className="bg-accent hover:bg-accent/90 text-black font-semibold"
-            >
-              {isCreating ? 'Saving...' : 'Save Tone'}
-            </Button>
-          </div>
-        </div>
-      </div>
-
       {/* Main Content */}
-      <div className="flex h-[calc(100vh-73px)]">
+      <div className="flex h-full relative">
         {/* Left Panel - Tone Info (Collapsible) */}
         <motion.div
           animate={{ width: sidebarCollapsed ? 0 : 320 }}
           transition={{ type: 'spring', stiffness: 400, damping: 40 }}
-          className="border-r border-border bg-card/40 backdrop-blur-sm overflow-hidden shrink-0"
+          className="border-r border-border bg-card/40 backdrop-blur-sm overflow-hidden shrink-0 h-full relative z-20"
         >
-          <div className="w-80 h-full overflow-y-auto p-6">
+          <div className="w-80 h-full overflow-y-auto p-6 pt-8">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="space-y-6"
             >
-              <div>
-                <h2 className="text-lg font-bold uppercase tracking-wide text-foreground mb-4">
-                  Tone Details
-                </h2>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => router.back()} 
+                    className="p-1.5 hover:bg-muted rounded-md transition-colors text-muted-foreground hover:text-foreground"
+                    title="Back"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </button>
+                  <h2 className="text-lg font-bold uppercase tracking-wide text-foreground">
+                    Create Tone
+                  </h2>
+                </div>
+                <button 
+                  onClick={() => setSidebarCollapsed(true)}
+                  className="p-1.5 hover:bg-muted rounded-md transition-colors text-muted-foreground hover:text-foreground"
+                  title="Hide sidebar"
+                >
+                  <PanelLeftClose className="w-4 h-4" />
+                </button>
               </div>
 
               {/* Tone Name */}
@@ -254,26 +261,16 @@ export default function CreateTonePage() {
         </motion.div>
 
         {/* Center Panel - Signal Chain */}
-        <div className="flex-1 flex flex-col min-w-0 min-h-0 relative">
-          {/* Toolbar strip */}
-          <div className="flex items-center gap-2 px-4 py-2 border-b border-border/50 bg-card/20 shrink-0">
-            <button
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-              title={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
+        <div className="flex-1 flex flex-col min-w-0 min-h-0 relative z-10">
+          {sidebarCollapsed && (
+            <button 
+              onClick={() => setSidebarCollapsed(false)}
+              className="absolute top-4 left-4 z-30 p-2 bg-card/80 backdrop-blur border border-border shadow-md rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              title="Show sidebar"
             >
-              {sidebarCollapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+              <PanelLeftOpen className="w-4 h-4" />
             </button>
-            <div className="h-4 w-px bg-border/50" />
-            <button
-              onClick={() => setIsFullscreen(!isFullscreen)}
-              className="p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-              title={isFullscreen ? 'Exit focus mode (Esc)' : 'Enter focus mode'}
-            >
-              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-            </button>
-            <span className="text-[10px] uppercase tracking-widest text-muted-foreground/50 ml-2">Workbench</span>
-          </div>
+          )}
 
           {/* Workbench area */}
           <div className="flex-1 overflow-auto min-h-0">
@@ -285,7 +282,7 @@ export default function CreateTonePage() {
                 </div>
               </div>
             ) : (
-              <div className="p-4">
+              <div className="h-full">
                 {signalChainEditorElement}
               </div>
             )}
@@ -296,42 +293,16 @@ export default function CreateTonePage() {
       {/* ── Fullscreen / Focus Mode Overlay ── */}
       <AnimatePresence>
         {isFullscreen && !isLoading && (
-          <>
-            {/* Blurred backdrop */}
-            <motion.div
-              key="fs-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md"
-              onClick={() => setIsFullscreen(false)}
-            />
-            {/* Zoomed-in workbench */}
-            <motion.div
-              key="fs-workbench"
-              initial={{ opacity: 0, scale: 0.92 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.92 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="fixed inset-4 z-[101] rounded-xl border border-border/50 bg-background/95 overflow-auto shadow-2xl"
-            >
-              {/* Fullscreen toolbar */}
-              <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 border-b border-border/50 bg-card/80 backdrop-blur-xl">
-                <span className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">⚡ Signal Routing — Focus Mode</span>
-                <button
-                  onClick={() => setIsFullscreen(false)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                >
-                  <Minimize2 className="w-3.5 h-3.5" />
-                  Exit <kbd className="ml-1 px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono">Esc</kbd>
-                </button>
-              </div>
-              <div className="p-6">
-                {signalChainEditorElement}
-              </div>
-            </motion.div>
-          </>
+          <motion.div
+            key="fs-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] bg-background"
+          >
+            {signalChainEditorElement}
+          </motion.div>
         )}
       </AnimatePresence>
       
