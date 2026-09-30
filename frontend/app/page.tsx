@@ -162,20 +162,20 @@ function SectionHeading({
       initial="hidden"
       whileInView="show"
       viewport={VIEWPORT}
-      className="text-center mb-20"
+      className="text-center mb-10 sm:mb-12"
     >
       {eyebrow && (
-        <p className="tv-label text-accent mb-4 tracking-widest">{eyebrow}</p>
+        <p className="tv-label text-accent mb-3 tracking-widest">{eyebrow}</p>
       )}
-      <h2 className="tv-display text-4xl md:text-6xl text-foreground mb-5 leading-tight">
+      <h2 className="tv-display text-3xl sm:text-5xl md:text-6xl text-foreground mb-4 leading-tight">
         {title}
       </h2>
       {/* Orange accent underline */}
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-4">
         <div className="h-0.5 w-16 bg-gradient-to-r from-transparent via-accent to-transparent rounded-full" />
       </div>
       {subtitle && (
-        <p className="text-muted-foreground max-w-lg mx-auto text-base leading-relaxed">
+        <p className="text-muted-foreground max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
           {subtitle}
         </p>
       )}
@@ -201,7 +201,7 @@ export default function LandingPage() {
       {/* ─────────────────────────────────────────────
           HERO
       ───────────────────────────────────────────── */}
-      <section className="relative min-h-[92vh] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pt-8 pb-28 overflow-hidden">
+      <section className="relative min-h-[82vh] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pt-8 pb-12 sm:pb-16 overflow-hidden">
         {/* Guitarist photo background */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -217,7 +217,7 @@ export default function LandingPage() {
         {/* Grid texture */}
         <div className="absolute inset-0 tv-grid-bg opacity-25" />
         {/* Bottom fade into sections below */}
-        <div className="absolute bottom-0 left-0 right-0 h-56 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <motion.h1
@@ -238,7 +238,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed"
+            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
           >
             Create signal chains with iconic amps and pedals. Configure every parameter.
             Share your sound with a global community of guitarists.
@@ -281,7 +281,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.55 }}
-            className="mt-20 flex flex-col items-center gap-3"
+            className="mt-12 sm:mt-14 flex flex-col items-center gap-3"
           >
             <p className="tv-label text-muted-foreground/40">Example Signal Chain</p>
             <div className="p-4 rounded-xl border border-white/5 bg-black/40 backdrop-blur-sm">
@@ -294,7 +294,7 @@ export default function LandingPage() {
       {/* ─────────────────────────────────────────────
           HOW IT WORKS
       ───────────────────────────────────────────── */}
-      <section className="relative py-32 sm:py-40 border-t border-border/30 bg-[#080808]">
+      <section className="relative py-16 sm:py-20 border-t border-border/30 bg-[#080808]">
         {/* subtle ambient glow top */}
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[1px] pointer-events-none"
@@ -348,7 +348,7 @@ export default function LandingPage() {
           FEATURED TONES
       ───────────────────────────────────────────── */}
       {featuredTones.length > 0 && (
-        <section className="relative py-32 sm:py-40 bg-background">
+        <section className="relative py-16 sm:py-20 bg-background">
           <div className="tv-container px-4 sm:px-6 lg:px-8">
             <SectionHeading
               eyebrow="Community picks"
@@ -358,7 +358,7 @@ export default function LandingPage() {
             />
 
             {/* Override the accent → link since SectionHeading uses plain text */}
-            <div className="text-center -mt-14 mb-14">
+            <div className="text-center -mt-6 mb-10">
               <Link
                 href="/browse"
                 className="inline-flex items-center gap-1.5 text-sm text-accent hover:text-accent/70 transition-colors group font-medium"
@@ -433,7 +433,7 @@ export default function LandingPage() {
       {/* ─────────────────────────────────────────────
           EXPLORE GENRES
       ───────────────────────────────────────────── */}
-      <section className="relative py-32 sm:py-40 border-t border-border/30 bg-[#080808]">
+      <section className="relative py-16 sm:py-20 border-t border-border/30 bg-[#080808]">
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[1px] pointer-events-none"
           style={{ background: 'linear-gradient(to right, transparent, rgba(255,107,0,0.2), transparent)' }}
@@ -474,7 +474,7 @@ export default function LandingPage() {
       {/* ─────────────────────────────────────────────
           COMMUNITY CTA
       ───────────────────────────────────────────── */}
-      <section className="py-32 sm:py-40 bg-background">
+      <section className="py-16 sm:py-20 bg-background">
         <div className="tv-container px-4 sm:px-6 lg:px-8">
           <motion.div
             variants={fadeUpSlow}
@@ -495,18 +495,18 @@ export default function LandingPage() {
               style={{ background: 'linear-gradient(to right, transparent, rgba(255,107,0,0.4), transparent)' }}
             />
 
-            <div className="relative z-10 py-20 px-8 md:py-24 md:px-16 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-accent/12 border border-accent/25 flex items-center justify-center mx-auto mb-8">
-                <Users className="w-7 h-7 text-accent" />
+            <div className="relative z-10 py-12 px-6 md:py-16 md:px-12 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-accent/12 border border-accent/25 flex items-center justify-center mx-auto mb-6">
+                <Users className="w-6 h-6 text-accent" />
               </div>
-              <h2 className="tv-display text-3xl md:text-5xl text-foreground mb-5">
+              <h2 className="tv-display text-3xl md:text-5xl text-foreground mb-4">
                 {isAuthenticated ? 'Ready to create your next tone?' : 'Join the community.'}
               </h2>
               {/* accent underline */}
-              <div className="flex justify-center mb-6">
+              <div className="flex justify-center mb-5">
                 <div className="h-0.5 w-12 bg-gradient-to-r from-transparent via-accent to-transparent rounded-full" />
               </div>
-              <p className="text-muted-foreground text-lg max-w-md mx-auto mb-10 leading-relaxed">
+              <p className="text-muted-foreground text-base sm:text-lg max-w-md mx-auto mb-8 leading-relaxed">
                 {isAuthenticated
                   ? 'Open the editor and start building your signal chain.'
                   : 'Sign up free and start building your first rig in minutes.'}
